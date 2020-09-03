@@ -1,0 +1,42 @@
+<%- include('../includes/header.ejs') %>
+<%- include('../includes/navigation.ejs') %>
+
+    <!-- Cart Items Details -->
+    <% if (orders.length <= 0) { %>
+        <div class="container">
+            <div class="alert alert-danger my-5" role="alert">
+            <h4 class="text-center">******You Do Not Have Items In Your Cart******</h4>
+            </div> 
+        </div>  
+    <% } else { %>   
+
+    <div class="container cart-page">
+        
+        <table>
+            <tr>
+                <th>Order</th>
+                <th>Products</th>
+            </tr>
+            <% orders.forEach(order => { %>
+            <tr>
+                <td>
+                    <h1><%= order._id %></h1>
+                </td>
+                <td>
+                    <ul class="order__product">
+                        <% order.products.forEach(p => { %>
+                        <li class="order__products-items">
+                            <%= p.product.title %> (<%= p.quantity %>)
+                        </li>
+                        <% }) %>
+                    </ul>
+                </td>
+            </tr>
+            <% }) %>
+        </table>
+    </div>                           
+    <% } %>
+
+<%- include('../includes/service.ejs') %>
+
+<%- include('../includes/footer.ejs') %>

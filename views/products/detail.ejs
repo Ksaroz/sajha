@@ -1,0 +1,105 @@
+<%- include('../includes/header.ejs') %>
+<!-- <link rel="stylesheet" href="/stylesheets/cakes.css"> -->
+<%- include('../includes/navigation.ejs') %>
+
+<div class="container single-product">
+    <div class="row">
+        <div class="col-2">
+            <img src="<%= product.imageUrl %>" width="100%" id="productImg" alt="<%= product.title %>">
+            <!-- <div class="small-img-row">
+                <div class="small-img-col">
+                    <img src="/images/cake1.png" width="100%" class="small-img">
+                </div>
+                <div class="small-img-col">
+                    <img src="/images/cake2.jpg" width="100%" class="small-img">
+                </div>
+                <div class="small-img-col">
+                    <img src="/images/cake3.png" width="100%" class="small-img">
+                </div>
+                <div class="small-img-col">
+                    <img src="/images/cake3.png" width="100%" class="small-img">
+                </div>
+            </div> -->
+        </div>
+        <div class="col-2">
+            <p>Breadcrumbs</p>
+            <h1><%= product.title %></h1>
+            <h4>Rs.<%= product.price %></h4>
+            <select>
+                <option>Select Pound</option>
+                <option>1 Pound</option>
+                <option>2 Pound</option>
+                <option>3 Pound</option>
+                <option>4 Pound</option>
+            </select>
+            <input type="number" value="1">
+            <a href="" class="btn">Add To Cart</a>
+            <h3>Product Details <i class="fa fa-indent"></i></h3>
+            <br>
+            <p><%= product.description %></p>
+        </div>
+    </div>
+</div>
+<!-- title  -->
+<div class="small-container">
+    <div class="row row-2">
+        <h2>You May Also Like</h2>
+        <p>View More</p>
+    </div>
+</div>
+<div class="small-container">
+        <div class="row">
+            <div class="col-4">
+                <img src="/images/cake1.png">
+                <h4>Chocolate with rainbow toppings</h4>
+                <div class="rating">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+                <p>Rs600.00</p>
+            </div>
+            <div class="col-4">
+                 <img src="/images/cake2.jpg">
+                 <h4>Chocolate with strawberry toppings</h4>
+                <div class="rating">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+                <p>Rs400.00</p>
+            </div>
+            <div class="col-4">
+                <img src="/images/cake3.png">
+                <h4>Chocolate with cherry & cream </h4>
+                <div class="rating">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-half-o"></i>
+                    <i class="fa fa-star-o"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+                <p>Rs200.00</p>
+            </div>
+            <div class="col-4">
+                <img src="/images/cake1.png">
+                <h4>Chocolate with rainbow toppings</h4>
+                <div class="rating">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+                <p>Rs600.00</p>
+            </div>
+        </div>
+</div>
+
+<%- include('../includes/service.ejs') %>
+
+<%- include('../includes/footer.ejs') %>

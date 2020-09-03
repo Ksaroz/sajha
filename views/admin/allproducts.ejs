@@ -1,0 +1,66 @@
+<%- include('../includes/header.ejs') %>
+<%- include('../includes/navigation.ejs') %>
+
+
+<div class="container">
+    <div class="row row-2">
+        <h2>All Products</h2>
+        <select>
+            <option value="#">Default</option>
+            <option value="#">Sort by price</option>
+            <option value="#">Sort by popularity</option>
+            <option value="#">Sort by rating</option>
+            <option value="#">Sort by sale</option>
+        </select>
+    </div>
+    
+    <% if ( prods.length > 0 ) { %> 
+    <div class="row">       
+            <% for ( let product of prods) { %>
+    <div class="box">  
+        <div class="slider">
+            <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+            <div class="buy">
+                <a href="/admin/edit/<%= product._id %>" class="btn">Edit</a>
+                <form action="/admin/delete" method="POST">
+                    <input type="hidden" name="productId" value="<%= product._id %>">
+                    <button class="btn" type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+        <div class="detail-box">
+            <div class="type">
+                <a href="/details/<%= product._id %>"><%= product.title %></a>
+                <a href="/details/<%= product._id %>" class="price">Rs.<%= product.price %></a>
+                <span class="rating">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                </span>
+            </div>            
+        </div>
+    </div>
+    <% } %>
+    </div>
+    <% } else { %>
+        <div class="alert alert-danger" role="alert">
+            <h4>No Product Found</h4>
+          </div>                        
+    <% } %>
+    <div class="row">
+        <div class="pagination">
+                <span>1</span>
+                <span>2</span>
+                <span>3</span>
+                <span>4</span>
+                <span>&#8594;</span>
+            </div> 
+        </div>
+        </div>
+
+</div>      <!-- Header End -->
+    
+
+<%- include('../includes/footer.ejs') %>

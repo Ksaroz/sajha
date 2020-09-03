@@ -1,0 +1,69 @@
+<%- include('../includes/header.ejs') %>
+<%- include('../includes/navigation.ejs') %>
+
+    <!-- Cart Items Details -->
+    <% if (products.length > 0) { %>
+    <div class="container cart-page">
+        
+        <table>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+            <% products.forEach(product => { %>
+            <tr>
+                <td>
+                    <div class="cart-info">
+                        <img src="<%= product.productId.imageUrl %>">
+                        <div>
+                            <p><%= product.productId.title %></p>
+                            <small>Price: Rs.<%= product.productId.price %></small>
+                            <br>
+                            <form action="/cart/delete" method="POST">
+                                <input type="hidden" name="productId" value="<%= product.productId._id %>">
+                                <button class="badge badge-danger" type="submit">Remove</button>
+                            </form>
+                            <!-- <a href="#">Remove</a> -->
+                        </div>
+                    </div>
+                </td>
+                <td><input type="number" value="<%= product.quantity %>"></td>
+                <td>Rs.<%= (product.productId.price * product.quantity).toFixed(2) %></td>
+            </tr>
+            <% }) %>
+        </table>
+        
+        <div class="total-price">
+            <table>
+                <tr>
+                    <td>Subtotal</td>
+                    <td>Rs.1000</td>
+                </tr>
+                <tr>
+                    <td>Tax</td>
+                    <td>Rs.100</td>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td>Rs.1100</td>
+                </tr>
+            </table>
+        </div>
+        <hr>
+        <form action="/orders" method="POST">
+            <button class="btn" type="submit">Order Now</button>
+        </form>
+    </div>
+    
+    <% } else { %>
+        <div class="container">
+            <div class="alert alert-danger my-5" role="alert">
+            <h4 class="text-center">******You Do Not Have Items In Your Cart******</h4>
+            </div> 
+        </div>                       
+    <% } %>
+
+<%- include('../includes/service.ejs') %>
+
+<%- include('../includes/footer.ejs') %>

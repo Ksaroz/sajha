@@ -1,0 +1,22 @@
+<%- include('../includes/header.ejs') %>
+<%- include('../includes/navigation.ejs') %>
+
+    <div class="row">
+        <div class="col">
+            <div class="add-product">
+            <form action="/admin/add" method="POST" class="form-group">
+                <label for="productTitle">Product Title</label>
+                <input type="text" name="title" id="productTitle">
+                <label for="productImage">Product Image</label>
+                <input type="text" name="imageUrl" id="productImage">
+                <label for="productPrice">Product Price</label>
+                <input type="number" name="price" id="productPrice">
+                <textarea name="description" id="productDescription" cols="10" rows="5" placeholder="Write something on product"></textarea>
+                <button type="submit" class="btn" name="submit">Add Product</button>
+            </form>
+        </div>
+        </div>
+    </div>    
+</div>   <!-- Header End -->
+
+<%- include('../includes/footer.ejs') %>

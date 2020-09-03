@@ -1,0 +1,23 @@
+<%- include('../includes/header.ejs') %>
+<%- include('../includes/navigation.ejs') %>
+
+    <div class="row">
+        <div class="col">
+            <div class="add-cake">
+            <form action="/admin/edit" method="POST" class="form-group">
+                <label for="productTitle">Product Title</label>
+                <input type="text" name="title" id="productTitle" value="<%= product.title %>">
+                <label for="productImage">Product Image</label>
+                <input type="text" name="imageUrl" id="productImage" value="<%= product.imageUrl %>">
+                <label for="productPrice">Product Price</label>
+                <input type="number" name="price" id="productPrice" value="<%= product.price %>">
+                <textarea name="description" id="productDescription" cols="10" rows="5" placeholder="Write something on product"><%= product.description %></textarea>
+                <button type="submit" class="btn" name="submit">Update</button>
+                <input type="hidden" name="productId" value="<%= product._id %>">
+            </form>
+        </div>
+        </div>
+    </div>    
+</div>   <!-- Header End -->
+
+<%- include('../includes/footer.ejs') %>
