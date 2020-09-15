@@ -1,0 +1,59 @@
+<%- include('../includes/header.ejs') %>
+<%- include('../includes/navigation.ejs') %>
+<div class="container-fluid">
+    <div class="row row-2">
+        <h2>All Products</h2>
+        <select>
+            <option value="#">Default</option>
+            <option value="#">Sort by price</option>
+            <option value="#">Sort by popularity</option>
+            <option value="#">Sort by rating</option>
+            <option value="#">Sort by sale</option>
+        </select>
+    </div>
+</div>
+
+<div class="container">
+    <% if ( prods.length > 0 ) { %> 
+    <div class="row product-row">
+        <% for ( let product of prods) { %>
+        <div class="col-md">
+            <!-- Products Card -->
+            <div class="product-box">
+                    <div class="shadow"></div>
+                    <img src="<%= product.imageUrl %>" alt="<%= product.title %>" />
+                    <div class="image_overlay"></div>
+                    <div id="view_details">View details</div>
+                    <div class="stats">        	
+                        <div class="stats-container">
+                            <span class="product_price">Rs.<%= product.price %></span>
+                            <span class="product_name"><%= product.title %></span>    
+                            <p>Description text here</p>                   
+                            <div class="product-options">
+                                <a href="#" class="btn product-btn">Make a Wish</a>
+                                <a href="#" class="btn product-btn">Add To Card</a>
+                        </div>                       
+                        </div>                         
+                    </div>
+                </div>  
+                              <!-- Product Card End  -->
+            </div>
+            <% } %>
+            </div>
+            <% } else { %>
+                <div class="alert alert-danger" role="alert">
+                    <h4>No Product Found</h4>
+                </div>                        
+            <% } %>
+        <div class="row">
+            <div class="pagination">
+              <span>1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+              <span>&#8594;</span>
+        </div>     
+        </div>	
+    </div>
+
+<%- include('../includes/footer.ejs') %>

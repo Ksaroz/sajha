@@ -2,7 +2,7 @@
 <%- include('../includes/navigation.ejs') %>
 
 
-<div class="container">
+<div class="container-fluid">
     <div class="row row-2">
         <h2>All Products</h2>
         <select>
@@ -13,42 +13,36 @@
             <option value="#">Sort by sale</option>
         </select>
     </div>
-    
+</div>
+<div class="container">
     <% if ( prods.length > 0 ) { %> 
-    <div class="row">       
-            <% for ( let product of prods) { %>
-    <div class="box">  
-        <div class="slider">
-            <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
-            <div class="buy">
-                <a href="/admin/edit/<%= product._id %>" class="btn">Edit</a>
-                <form action="/admin/delete" method="POST">
-                    <input type="hidden" name="productId" value="<%= product._id %>">
-                    <button class="btn" type="submit">Delete</button>
-                </form>
+        <div class="row">       
+                <% for ( let product of prods) { %>
+            <!-- Products -->
+          <div class="product-grid">
+            <div class="image">
+              <a href="#">
+                <img src="<%= product.imageUrl %>" class="w-100" alt="<%= product.title %>">
+                <div class="overlay">
+                  <div class="detail">View Detail</div>
+                </div>
+              </a>
             </div>
+            <h5 class="text-center"><%= product.title %></h5>
+            <h5 class="text-center">Rs.<%= product.price %></h5>
+            <a href="#" class="btn btn-cart">EDIT</a>
+            <a href="#" class="btn btn-cart">DELETE</a>
+          </div>
+          <!-- /Products -->
+        <% } %>
         </div>
-        <div class="detail-box">
-            <div class="type">
-                <a href="/details/<%= product._id %>"><%= product.title %></a>
-                <a href="/details/<%= product._id %>" class="price">Rs.<%= product.price %></a>
-                <span class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </span>
-            </div>            
-        </div>
-    </div>
-    <% } %>
-    </div>
-    <% } else { %>
-        <div class="alert alert-danger" role="alert">
-            <h4>No Product Found</h4>
-          </div>                        
-    <% } %>
+        <% } else { %>
+            <div class="alert alert-danger" role="alert">
+                <h4>No Product Found</h4>
+              </div>                        
+        <% } %>
+    </div>               
+            
     <div class="row">
         <div class="pagination">
                 <span>1</span>
@@ -64,3 +58,11 @@
     
 
 <%- include('../includes/footer.ejs') %>
+
+<!-- <span class="rating">
+    <i class="fa fa-star"></i>
+    <i class="fa fa-star"></i>
+    <i class="fa fa-star"></i>
+    <i class="fa fa-star"></i>
+    <i class="fa fa-star-o"></i>
+</span> -->

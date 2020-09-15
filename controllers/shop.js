@@ -8,7 +8,7 @@ exports.getProductIndex = (req, res, next) => {
 exports.getAllProducts = (req, res, next) => {
     Product.find()
     .then(products => {
-        res.render('products/allproducts', {
+        res.render('products/all-products', {
             prods: products,
             title: 'All products',
             path: '/admin/add'
