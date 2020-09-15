@@ -1,67 +1,200 @@
 <%- include('../includes/header.ejs') %>
 <%- include('../includes/navigation.ejs') %>
-
-    <!-- Cart Items Details -->
-    <% if (products.length > 0) { %>
-    <div class="container cart-page">
+<div class="cart_navigation">
+    <div class="payment-logo">
+        <img src="/images/esewa.png" alt="esewa-logo">
+        <img src="/images/khalti.png" alt="khalti-logo">
+        <img src="/images/ime.jpg" alt="ime-logo">
+        <img src="/images/paypal.png" alt="sajha-logo">
+        <img src="/images/visa.png" alt="visa-logo">
+        <img src="/images/master.png" alt="master-logo">
+        <!-- <a href="#"><i class="fas fa-shopping-cart"></i></a> -->
+    </div>
+    <div class="middle_content">
+        <div class="bag">BAG ----</div>
         
-        <table>
-            <tr>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Total</th>
-            </tr>
-            <% products.forEach(product => { %>
-            <tr>
-                <td>
-                    <div class="cart-info">
-                        <img src="<%= product.productId.imageUrl %>">
-                        <div>
-                            <p><%= product.productId.title %></p>
-                            <small>Price: Rs.<%= product.productId.price %></small>
-                            <br>
-                            <form action="/cart/delete" method="POST">
-                                <input type="hidden" name="productId" value="<%= product.productId._id %>">
-                                <button class="badge badge-danger" type="submit">Remove</button>
-                            </form>
-                            <!-- <a href="#">Remove</a> -->
+        <div class="address">ADDRESS ----</div>
+        
+        <div class="payment">PAYMENT</div>
+        
+    </div>
+    <div class="secure">
+        <i class="fas fa-lock"></i>
+        <p>100% secure</p>
+    </div>
+</div>
+<div class="cart-wrapper">
+
+    <div class="wrapper_content">
+        <div class="header_title">
+            <div class="title">
+                MY SHOPPING CART :
+            </div>
+            <div class="amount">
+                <b>( 2 ) ITEMS</b> 
+            </div>
+
+        </div>
+        <div class="product_wrap">
+            <div class="product_info">
+                <div class="product_img">
+                    <img src="images/shoe.jpg" alt="ProductImage" width="200px" height="200px">
+                </div>
+                <div class="product_data">
+                    <div class="description">
+                        <div class="main_header">
+                            Roadster : Men Grey Slip-On Sneakers
+                        </div>
+                        <div class="sub_header">
+                            A pair of round-toe grey slip-on sneakers, has regular styling, mock lace detail
                         </div>
                     </div>
-                </td>
-                <td><input type="number" value="<%= product.quantity %>"></td>
-                <td>Rs.<%= (product.productId.price * product.quantity).toFixed(2) %></td>
-            </tr>
-            <% }) %>
-        </table>
-        
-        <div class="total-price">
-            <table>
-                <tr>
-                    <td>Subtotal</td>
-                    <td>Rs.1000</td>
-                </tr>
-                <tr>
-                    <td>Tax</td>
-                    <td>Rs.100</td>
-                </tr>
-                <tr>
-                    <td>Total</td>
-                    <td>Rs.1100</td>
-                </tr>
-            </table>
+                    <div class="qty">
+                        <div class="size_select">
+                            <p>Size : <span>9</span></p>
+                        </div>
+                        <div class="qty_select">
+                            <p>Qty : <span>1</span></p>
+                        </div>
+                    </div>
+                    <div class="price">
+                        <div class="current_price">$25</div>
+                        <div class="normal_price">$30</div>
+                        <div class="discount">15% OFF</div>
+                    </div>
+                </div>
+            </div>
+            <div class="product_btns">
+                <div class="remove">REMOVE</div>
+                <div class="whishlist">MOVE TO WHISHLIST</div>
+            </div>
+            
         </div>
-        <hr>
-        <form action="/orders" method="POST">
-            <button class="btn" type="submit">Order Now</button>
-        </form>
+         <div class="product_wrap">
+            <div class="product_info">
+                <div class="product_img">
+                    <img src="images/shoe2.jpg" alt="ProductImage" width="200px" height="200px">
+                </div>
+                <div class="product_data">
+                    <div class="description">
+                        <div class="main_header">
+                            ASICS : Men Grey Woven Design GT 2000 8 Knit Running Shoes
+                        </div>
+                        <div class="sub_header">
+                            FlyteFoam technology provides exceptional bounce back and responsiveness.Trusstic system technology.
+                        </div>
+                    </div>
+                    <div class="qty">
+                        <div class="size_select">
+                            <p>Size : <span>9</span></p>
+                        </div>
+                        <div class="qty_select">
+                            <p>Qty : <span>1</span></p>
+                        </div>
+                    </div>
+                    <div class="price">
+                        <div class="current_price">$30</div>
+                        <div class="normal_price">$35</div>
+                        <div class="discount">15% OFF</div>
+                    </div>
+                </div>
+            </div>
+            <div class="product_btns">
+                <div class="remove">REMOVE</div>
+                <div class="whishlist">MOVE TO WHISHLIST</div>
+            </div>
+            
+        </div>
+        <div class="slider">
+            <div class="bg_shadow"></div>
+            <div class="select_size">
+                <div class="header">
+                    <div class="slider_title">Select Size</div>
+                    <div class="close">X</div>
+                </div>
+                <div class="body">
+                    <ul>
+                        <li>6</li>
+                        <li>7</li>
+                        <li>8</li>
+                        <li class="active">9</li>
+                        <li>10</li>
+                    </ul>
+                </div>
+                <div class="cart-footer">
+                    <div class="button">DONE</div>
+                </div>
+            </div>
+            <div class="select_quantity">
+                <div class="header">
+                    <div class="slider_title">Select Quantity</div>
+                    <div class="close">X</div>
+                </div>
+                <div class="body">
+                    <ul>
+                        <li class="active">1</li>
+                        <li>2</li>
+                        <li>3</li>
+                        <li>4</li>
+                        <li>5</li>
+                        <li>6</li>
+                        <li>7</li>
+                        <li>8</li>
+                        <li>9</li>
+                        <li>10</li>
+                    </ul>
+                </div>
+                <div class="cart-footer">
+                    <div class="button">DONE</div>
+                </div>
+            </div>
+        </div>
     </div>
     
-    <% } else { %>
-        <div class="container">
-            <div class="alert alert-danger my-5" role="alert">
-            <h4 class="text-center">******Your Cart Is Empty******</h4>
-            </div> 
-        </div>                       
-    <% } %>
+    <div class="wrapper_amount">
+        <div class="header_title">
+            <div class="title">
+                TOTAL PRICE DETAILS:
+            </div>
+            <div class="amount">
+                <b>$ 25</b> 
+            </div>
+        </div>
+        <div class="price_details">
+            <div class="price_item">
+                <p>Cart Total :</p>
+                <p>$30</p>
+            </div>
+            <div class="price_item">
+                <p>Cart Discount :</p>
+                <p style="color: red;">-$5</p>
+            </div>
+            
+            <div class="price_item">
+                <p>Order Total :</p>
+                <p>$25</p>
+            </div>
+            <div class="price_item">
+                <p>Shipping Charges :</p>
+                <p><span style="text-decoration: line-through;"></span>$5 <span class="green">FREE</span></p>
+            </div>
+            <div class="coupon">
+                <p>Coupon Discount :</p>
+                <p><a href="#">Apply Coupon</a></p>
+            </div>
+            <div class="total">
+                <p>Total :</p>
+                <p>$25</p>
+            </div>
+        </div>
+        <div class="checkout">
+            <a href="#" role="button" class="checkout_btn">Place Order &#8594</a>
+        </div>
+        <div class="continue">
+            <a href="#" role="button" class="checkout_btn">&#8592 Continue Shopping</a>
+        </div>
+    </div>
+</div>
+
 
 <%- include('../includes/footer.ejs') %>
