@@ -18,16 +18,16 @@ exports.getAllProducts = (req, res, next) => {
 }
 
 exports.getProductDetails = (req, res, next) => {
-    const productId = req.params.productId;
-    Product.findById(productId)
-    .then(product => {
-        res.render('products/detail', { 
+    // const productId = req.params.productId;
+    // Product.findById(productId)
+    // .then(product => {
+        res.render('products/details', { 
             title: 'product Details',
-            product: product,
+            // product: product,
             path: '/details'
         });
 
-    })
+    // })
 }
 
 exports.getProductCart = (req, res, next) => {
@@ -64,6 +64,13 @@ exports.postCartDeleteProduct = (req, res, next) => {
             res.redirect('/cart');
         })
         .catch(err => console.log(err));
+}
+
+exports.getMyOrders = (req, res, next) => {
+    res.render('products/order', { 
+        title: 'My Orders',
+        path: '/orders'
+    });
 }
 
 exports.postOrder = (req, res, next) => {

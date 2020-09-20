@@ -10,7 +10,7 @@ router.get('/', productsController.getProductIndex );
 router.get('/products', productsController.getAllProducts);
 
 /* GET product-details page */
-router.get('/details/:productId', productsController.getProductDetails);
+router.get('/details', productsController.getProductDetails);
 
 /* GET Cart page */
 router.get('/cart', productsController.getProductCart);
@@ -23,6 +23,9 @@ router.post('/cart/delete', productsController.postCartDeleteProduct);
 
 /* POST Place Orders */
 router.post('/orders', productsController.postOrder);
+
+/* GET Order page */
+router.get('/orders', productsController.getMyOrders);
 
 /* GET About page */
 router.get('/about', productsController.getAboutPage);

@@ -1,13 +1,10 @@
 <%- include('../includes/header.ejs') %>
 <%- include('../includes/navigation.ejs') %>
 
-    <div class="account-page">
+    <div id="wrapper">
         <div class="container">
             <div class="row">
-                <div class="col-2">
-                    <img src="/images/darkcake.png" alt="darkcake">
-                </div>
-                <div class="col-2">
+                <div class="col">
                     <div class="form-container">
                         <div class="form-btn">
                             <span onclick="login()">Login</span>
@@ -17,14 +14,15 @@
                         <form action="" id="loginForm">
                             <input type="text" placeholder="Username">
                             <input type="password" placeholder="Password">
-                            <button type="submit" class="btn">Login</button>
+                            <button type="submit" class="sajha-btn">Login</button>
                             <a href="#">Forgot Password</a>
                         </form>
                         <form action="" id="regForm">
                             <input type="text" placeholder="Username">
                             <input type="email" placeholder="Email">
                             <input type="password" placeholder="Password">
-                            <button type="submit" class="btn">Register</button>
+                            <button type="submit" class="sajha-btn">Register</button>
+                            <a href="#">Already have an account?</a>
                         </form>
                         
                     </div>

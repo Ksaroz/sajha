@@ -23,6 +23,7 @@
         <p>100% secure</p>
     </div>
 </div>
+<% if (products.length > 0) { %>
 <div class="cart-wrapper">
 
     <div class="wrapper_content">
@@ -35,18 +36,19 @@
             </div>
 
         </div>
-        <div class="product_wrap">
+        <% products.forEach(product => { %>
+        <div class="product_wrap">            
             <div class="product_info">
                 <div class="product_img">
-                    <img src="images/shoe.jpg" alt="ProductImage" width="200px" height="200px">
+                    <img src="<%= product.productId.imageUrl %>" alt="ProductImage" width="200px" height="200px">
                 </div>
                 <div class="product_data">
                     <div class="description">
                         <div class="main_header">
-                            Roadster : Men Grey Slip-On Sneakers
+                            <%= product.productId.title %>
                         </div>
                         <div class="sub_header">
-                            A pair of round-toe grey slip-on sneakers, has regular styling, mock lace detail
+                            <%= product.productId.description %>
                         </div>
                     </div>
                     <div class="qty">
@@ -54,57 +56,27 @@
                             <p>Size : <span>9</span></p>
                         </div>
                         <div class="qty_select">
-                            <p>Qty : <span>1</span></p>
+                            <p>Qty : <span><%= product.quantity %>"</span></p>
                         </div>
                     </div>
                     <div class="price">
-                        <div class="current_price">$25</div>
+                        <div class="current_price">Rs.<%= product.productId.price %></div>
                         <div class="normal_price">$30</div>
                         <div class="discount">15% OFF</div>
                     </div>
                 </div>
             </div>
             <div class="product_btns">
-                <div class="remove">REMOVE</div>
+                <form action="/cart/delete" method="POST">
+                    <input type="hidden" name="productId" value="<%= product.productId._id %>">
+                    <div class="remove">REMOVE</div>
+                </form>
+                
                 <div class="whishlist">MOVE TO WHISHLIST</div>
             </div>
             
         </div>
-         <div class="product_wrap">
-            <div class="product_info">
-                <div class="product_img">
-                    <img src="images/shoe2.jpg" alt="ProductImage" width="200px" height="200px">
-                </div>
-                <div class="product_data">
-                    <div class="description">
-                        <div class="main_header">
-                            ASICS : Men Grey Woven Design GT 2000 8 Knit Running Shoes
-                        </div>
-                        <div class="sub_header">
-                            FlyteFoam technology provides exceptional bounce back and responsiveness.Trusstic system technology.
-                        </div>
-                    </div>
-                    <div class="qty">
-                        <div class="size_select">
-                            <p>Size : <span>9</span></p>
-                        </div>
-                        <div class="qty_select">
-                            <p>Qty : <span>1</span></p>
-                        </div>
-                    </div>
-                    <div class="price">
-                        <div class="current_price">$30</div>
-                        <div class="normal_price">$35</div>
-                        <div class="discount">15% OFF</div>
-                    </div>
-                </div>
-            </div>
-            <div class="product_btns">
-                <div class="remove">REMOVE</div>
-                <div class="whishlist">MOVE TO WHISHLIST</div>
-            </div>
-            
-        </div>
+        <% }) %>
         <div class="slider">
             <div class="bg_shadow"></div>
             <div class="select_size">
@@ -195,6 +167,12 @@
         </div>
     </div>
 </div>
-
+<% } else { %>
+    <div class="cartWrapper">
+        <div class="alert alert-danger my-5" role="alert">
+        <h4 class="text-center">******Your Cart Is Empty******</h4>
+        </div> 
+    </div>
+<% } %>
 
 <%- include('../includes/footer.ejs') %>
