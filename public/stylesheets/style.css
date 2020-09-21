@@ -766,7 +766,6 @@ nav ul li {
   left: 50%;
   margin-left: -85px;
   border: 2px solid #fff;
-  color: #fff;
   font-size: 15px;
   text-align: center;
   text-transform: uppercase;
@@ -778,10 +777,17 @@ nav ul li {
   animation: fade-in 2s;
 }
 
+#view_details > a {
+  color: #fff;
+}
+
 #view_details:hover {
   background: #fff;
-  color: #48cfad;
   cursor: pointer;
+}
+
+#view_details > a:hover {
+  color: #48cfad;
 }
 
 .product-box.animate #view_details {
@@ -1293,13 +1299,32 @@ th:last-child {
   font-weight: 700;
 }
 
-.remove {
-  border-right: 1px solid #e4e4e4;
-  width: 40%;
+.cart_btns {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  padding-top: 10px;
+  text-align: center;
+  border-top: 1px solid #e4e4e4;
+  color: #aca9a9;
+  cursor: pointer;
+  font-weight: 300px;
 }
 
-.whishlist {
-  width: 60%;
+.cart_btns .remove,
+.cart_btns .wishlist {
+  color: #aca9a9;
+}
+
+.cart_btns .remove:hover,
+.cart_btns .wishlist:hover {
+  color: #555555;
 }
 
 .qty, .price {
@@ -1348,7 +1373,9 @@ th:last-child {
   color: #f16565;
 }
 
-.price_details .price_item {
+.price_details .price_item,
+.price_details .coupon,
+.price_details .total {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1537,6 +1564,41 @@ th:last-child {
   padding-right: 5px;
 }
 
+/********Empty-Cart*******/
+.empty-cart {
+  display: block;
+  margin: auto;
+  width: 200px;
+  height: 150px;
+  padding: 20px;
+}
+
+.empty-cart-text {
+  font-size: 20px;
+  font-weight: 400;
+  padding: 9px;
+  margin: auto;
+}
+
+.empty-continue {
+  display: table;
+  width: auto;
+  padding: 10px 30px;
+  margin: auto;
+  background: #00ffcc;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.empty-continue .continue-btn {
+  color: #ff3f6c;
+}
+
+.empty-continue .continue-btn:hover {
+  color: #f2f2f2;
+}
+
+/*********end**********/
 /* .wrapper{
         flex-direction: column;
     } */

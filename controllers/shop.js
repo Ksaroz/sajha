@@ -18,16 +18,15 @@ exports.getAllProducts = (req, res, next) => {
 }
 
 exports.getProductDetails = (req, res, next) => {
-    // const productId = req.params.productId;
-    // Product.findById(productId)
-    // .then(product => {
+    const productId = req.params.productId;
+    Product.findById(productId)
+    .then(product => {
         res.render('products/details', { 
             title: 'product Details',
-            // product: product,
+            product: product,
             path: '/details'
         });
-
-    // })
+    });
 }
 
 exports.getProductCart = (req, res, next) => {
@@ -67,11 +66,16 @@ exports.postCartDeleteProduct = (req, res, next) => {
 }
 
 exports.getMyOrders = (req, res, next) => {
-    res.render('products/order', { 
-        title: 'My Orders',
-        path: '/orders'
-    });
-}
+    Order.find({ 'user.userId': req.user._id })
+    .then(orders => {
+        res.render('products/order', {
+            title: 'My Orders',
+            path: '/orders',
+            orders: orders
+        });
+    })
+    .catch(err => console.log(err));
+};
 
 exports.postOrder = (req, res, next) => {
     req.user

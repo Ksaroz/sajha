@@ -23,7 +23,9 @@
                     <div class="shadow"></div>
                     <img src="<%= product.imageUrl %>" alt="<%= product.title %>" />
                     <div class="image_overlay"></div>
-                    <div id="view_details">View details</div>
+                    <div id="view_details">
+                        <a href="/details/<%= product._id %>">View Details</a>
+                    </div>
                     <div class="stats">        	
                         <div class="stats-container">
                             <span class="product_name"><%= product.title %>...</span>    
@@ -31,8 +33,9 @@
                             <span class="product_price">Rs.<%= product.price %></span>                  
                             <span class="product_old_price">Rs.<%= product.price %></span>
                             <div class="product-options">
-                                <a href="#" class="btn product-btn">Make a Wish</a>
-                                <a href="#" class="btn product-btn">Add To Card</a>
+                                <a href="#" class="btn product-btn">WishList</a>
+                                <%- include('../includes/add-to-cart.ejs', {product: product}) %>
+                                
                         </div>                       
                         </div>                         
                     </div>

@@ -17,29 +17,38 @@
         <p>100% secure</p>
     </div>
 </div>
-<div class="cart-wrapper">
+<% if (orders.length <= 0) { %>
+    <div class="container">
+        <div class="alert alert-danger my-5" role="alert">
+        <h4 class="text-center">******You Do Not Have Items In Your Cart******</h4>
+        </div> 
+    </div>  
+<% } else { %>   
 
+<div class="cart-wrapper">
+    
     <div class="wrapper_content">
         <div class="header_title">
             <div class="title">
                 <p>Your Orders :</p>
             </div>
-            <div class="amount">
-                <p>( 2 ) ITEMS</p> 
-            </div>
+            
             <div class="amount">
                 <p>Total Orders ( 4 )</p> 
             </div>
         </div>
+        <% orders.forEach(order => { %>
+            <!-- Regular Orders -->            
         <div class="product_wrap">
-            <div class="product_info">
+            <% order.products.forEach(p => { %>
+            <div class="product_info">                
                 <div class="product_img">
-                    <img src="images/shoe.jpg" alt="ProductImage" width="200px" height="200px">
+                    <img src="<%= p.product.imageUrl %>" alt="ProductImage" width="200px" height="200px">
                 </div>
                 <div class="product_data">
                     <div class="description">
                         <div class="main_header">
-                            Roadster : Men Grey Slip-On Sneakers
+                            <%= p.product.title %>
                         </div>
                     </div>
                     <div class="row orderSummary">
@@ -48,11 +57,11 @@
                             <p>Size : <span>9</span></p>
                         </div>
                         <div class="qty_select">
-                            <p>Qty : <span>1</span></p>
+                            <p>Qty : <span><%= p.quantity %></span></p>
                         </div>
                     </div>
                     <div class="col-md-4 orderprice">
-                        <div class="current_order_price">$25</div>
+                        <div class="current_order_price">Rs.<%= p.product.price %></div>
                     </div>
                     <div class="col-md-4 orderStatus">
                         <p>Order Status: <span class="text-danger">Pending</span></p>
@@ -61,50 +70,15 @@
                 </div>
                 </div>
             </div>
+            <% }) %>
             <div class="product_order_btns">
                 <div class="orderDetails"><a href="">Order Details</a></div>
                 <div class="orderCancel"><a href="">Cancel Order</a></div>
-                <div class="current_order_price">$25</div>
-            </div>
-            
+                <div class="current_order_price">Rs.25</div>
+            </div>            
         </div>
-         <div class="product_wrap">
-            <div class="product_info">
-                <div class="product_img">
-                    <img src="images/shoe2.jpg" alt="ProductImage" width="200px" height="200px">
-                </div>
-                <div class="product_data">
-                    <div class="description">
-                        <div class="main_header">
-                            ASICS : Men Grey Woven Design GT 2000 8 Knit Running Shoes
-                        </div>
-                    </div>                    
-                    <div class="row orderSummary">
-                        <div class="col-md-4 orderDetails">
-                            <div class="size_select">
-                                <p>Size : <span>9</span></p>
-                            </div>
-                            <div class="qty_select">
-                                <p>Qty : <span>1</span></p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 orderprice">
-                            <div class="current_order_price">$25</div>
-                        </div>
-                        <div class="col-md-4 orderStatus">
-                            <p>Order Status: <span class="text-danger">Pending</span></p>
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="product_order_btns">
-                <div class="orderDetails"><a href="">Order Details</a></div>
-                <div class="orderCancel"><a href="">Cancel Order</a></div>
-                <div class="current_order_price">$25</div>
-            </div>
-            
-        </div>
+        <% }) %>
+        <!-- /Regular Orders -->        
         <div class="slider">
             <div class="bg_shadow"></div>
             <div class="select_size">
@@ -156,15 +130,12 @@
             <div class="title">
                 <p>Recent Order Summary:</p> 
             </div>
-            <div class="amount">
-                <p>$ 25</p> 
-            </div>
         </div>
         <div class="price_details">
                       
             <div class="price_item">
                 <p>Order Total :</p>
-                <p>$25</p>
+                <p>Rs.25</p>
             </div>
             <div class="price_item">
                 <p>Tax :</p>
@@ -172,25 +143,26 @@
             </div>
             <div class="price_item">
                 <p>Shipping Charges :</p>
-                <p><span style="text-decoration: line-through;">$5</span> <span class="green">FREE</span></p>
+                <p><span style="text-decoration: line-through;">Rs.5</span> <span class="green">FREE</span></p>
             </div>
             <div class="price_item">
                 <p>Coupon Discount :</p>
-                <p>$10</p>
+                <p>Rs.10</p>
             </div>
             <div class="total">
                 <p>Total :</p>
-                <p>$25</p>
+                <p>Rs.25</p>
             </div>
         </div>
         <div class="checkout">
             <a href="#" role="button" class="checkout_btn">Cancel Order</a>
         </div>
         <div class="continue">
-            <a href="#" role="button" class="checkout_btn">&#8592 Continue Shopping</a>
+            <a href="/" role="button" class="checkout_btn">&#8592 Continue Shopping</a>
         </div>
     </div>
 </div>
+<% } %>
 
 
 <%- include('../includes/footer.ejs') %>

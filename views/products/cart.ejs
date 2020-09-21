@@ -66,13 +66,16 @@
                     </div>
                 </div>
             </div>
-            <div class="product_btns">
+            <div class="cart_btns">
                 <form action="/cart/delete" method="POST">
                     <input type="hidden" name="productId" value="<%= product.productId._id %>">
-                    <div class="remove">REMOVE</div>
+                    <button class="remove" type="submit">REMOVE</button>
                 </form>
-                
-                <div class="whishlist">MOVE TO WHISHLIST</div>
+
+                <form action="/cart/delete" method="POST">
+                    <input type="hidden" name="productId" value="<%= product.productId._id %>">
+                    <div class="wishlist">MOVE TO WISHLIST</div>
+                </form>
             </div>
             
         </div>
@@ -160,7 +163,10 @@
             </div>
         </div>
         <div class="checkout">
-            <a href="#" role="button" class="checkout_btn">Place Order &#8594</a>
+            <form action="/orders" method="POST">                
+                <button class="checkout_btn" type="submit">Place Order &#8594</button>
+            </form>
+            
         </div>
         <div class="continue">
             <a href="#" role="button" class="checkout_btn">&#8592 Continue Shopping</a>
@@ -168,10 +174,14 @@
     </div>
 </div>
 <% } else { %>
-    <div class="cartWrapper">
-        <div class="alert alert-danger my-5" role="alert">
-        <h4 class="text-center">******Your Cart Is Empty******</h4>
+    <div id="wrapper">
+        <img src="/images/empty-cart.png" alt="empty-cart" class="empty-cart">
+        <h6 class="text-center empty-cart-text">******Your Cart Is Empty******</h6>
+        <div class="empty-continue">
+            <a href="#" class="continue_btn">&#8592 Continue Shopping</a>
+        </div>
         </div> 
+        
     </div>
 <% } %>
 
