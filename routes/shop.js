@@ -27,6 +27,15 @@ router.post('/orders', productsController.postOrder);
 /* GET Order page */
 router.get('/orders', productsController.getMyOrders);
 
+/* GET order-details page */
+router.get('/orders/details/:orderId', productsController.getOrderDetails);
+
+/* POST Delete Cart Items */
+router.post('/orders/details/delete', productsController.postDeleteOrderDetails);
+
+/* POST Delete Orders */
+router.post('/orders/delete', productsController.postDeleteOrder);
+
 /* GET About page */
 router.get('/about', productsController.getAboutPage);
 

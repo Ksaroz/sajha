@@ -50,6 +50,14 @@ userSchema.methods.removeFromCart = function(productId) {
     return this.save();
 };
 
+userSchema.methods.removeFromOrder = function(orderId) {
+    const updatedOrderItems = this.orders.filter(order => {
+        return order.orderId.toString() !== orderId.toString();
+    });
+    this.order = updatedOrderItems;
+    return this.save();
+};
+
 userSchema.methods.clearCart = function () {
     this.cart = { items: [] };
     return this.save();

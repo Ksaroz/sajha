@@ -2,16 +2,16 @@
 <%- include('../includes/navigation.ejs') %>
 <div class="cart_navigation">
     <div class="myOrder">
-        <h3 class="p-3">My Orders</h3>
+        <h3 class="p-3">Order Details</h3>
     </div>
-    <div class="middle_content">
+    <!-- <div class="middle_content">
         <div class="bag">BAG ----</div>
         
         <div class="address">ADDRESS ----</div>
         
         <div class="payment">PAYMENT</div>
         
-    </div>
+    </div> -->
     <div class="secure">
         <i class="fas fa-lock"></i>
         <p>100% secure</p>
@@ -28,56 +28,59 @@
 <div class="cart-wrapper">
     
     <div class="wrapper_content">
-        <div class="header_title">                      
+        <div class="header_title">
+            <div class="title">
+                <p>Order ID : <%= orders._id %></p>
+            </div>
+            
             <div class="amount">
-                <p>Total Orders ( 4 )</p> 
+                <p>Total Items ( 4 )</p> 
             </div>
         </div>
-        <% orders.forEach(order => { %>
-            <!-- Regular Orders -->            
-        <div class="product_wrap">
-            
-            <div class="product_info">                
-                <div class="product_img">
-                    <img src="<%= order.products[0].product.imageUrl %>" alt="ProductImage" width="200px" height="200px">
-                </div>
-                <div class="product_data">
-                    <div class="description">
-                        <div class="main_header">
-                            <%= order.products[0].product.title %>
+        <!-- Regular Orders -->            
+        <% orders.products.forEach(p => { %>
+            <div class="product_wrap">            
+                <div class="product_info">
+                    <div class="product_img">
+                        <img src="<%= p.product.imageUrl %>" alt="<%= p.product.title %>" width="200px" height="200px">
+                    </div>
+                    <div class="product_data">
+                        <div class="description">
+                            <div class="main_header">
+                                <%= p.product.title %>
+                            </div>
+                            <div class="sub_header">
+                                <%= p.product.description %>
+                            </div>
+                        </div>
+                        <div class="qty">
+                            <div class="size_select">
+                                <p>Size : <span>9</span></p>
+                            </div>
+                            <div class="qty_select">
+                                <p>Qty : <span><%= p.quantity %>"</span></p>
+                            </div>
+                        </div>
+                        <div class="price">
+                            <div class="current_price">Rs.<%= p.product.price %></div>
+                            <div class="normal_price">$30</div>
+                            <div class="discount">15% OFF</div>
                         </div>
                     </div>
-                    <div class="row orderSummary">
-                    <div class="col-md-4 orderDetails">
-                        <div class="size_select">
-                            <p>Size : <span>9</span></p>
-                        </div>
-                        <div class="qty_select">
-                            <p>Qty : <span><%= order.products[0].quantity %></span></p>
-                        </div>
-                    </div>
-                    <div class="col-md-4 orderprice">
-                        <div class="current_order_price">Rs.<%= order.products[0].product.price %></div>
-                    </div>
-                    <div class="col-md-4 orderStatus">
-                        <p>Order Status: <span class="text-danger">Pending</span></p>
-                        
-                    </div>
                 </div>
-                </div>
-            </div>
-            
-            <div class="product_order_btns">
-                <div class="orderDetails"><a href="/orders/details/<%= order._id %>">Order Details</a></div>                
-                <form action="/orders/delete" method="POST">
-                    <input type="hidden" name="orderId" value="<%= order._id %>">
-                    <button class="orderCancel" type="submit">Cancel Order</button>
-                </form>
-                <!-- <div class="orderCancel"><a href="">Cancel Order</a></div> -->
-                <div class="current_order_price">Rs.25</div>
-            </div>            
-        </div>
-        <% }) %>
+                <div class="cart_btns">
+                    <form action="/orders/details/delete" method="POST">
+                        <input type="hidden" name="productId" value="<%= p.product._id %>">
+                        <button class="remove" type="submit">REMOVE</button>
+                    </form>
+    
+                    <form action="/orders/details/delete" method="POST">
+                        <input type="hidden" name="productId" value="<%= p.product._id %>">
+                        <div class="wishlist">MOVE TO WISHLIST</div>
+                    </form>
+                </div>                
+            </div>       
+        <% }) %>        
         <!-- /Regular Orders -->        
         <div class="slider">
             <div class="bg_shadow"></div>

@@ -29,6 +29,7 @@ exports.getProductDetails = (req, res, next) => {
     });
 }
 
+
 exports.getProductCart = (req, res, next) => {
     req.user
     .populate('cart.items.productId')
@@ -102,6 +103,47 @@ exports.postOrder = (req, res, next) => {
     })
     .catch(err => console.log(err));
 };
+
+exports.getOrderDetails = (req, res, next) => {
+    const orderId = req.params.orderId;
+    Order.findById(orderId)
+    .then(orders => {
+        res.render('products/order-details', { 
+            title: 'Order Details',
+            orders: orders,
+            path: '/orders/details'
+        });
+    });
+}
+
+exports.postDeleteOrder = (req, res, next) => {
+    const orderId = req.body.orderId;
+    Order.findByIdAndRemove(orderId)
+        .then(result => {
+            console.log('Order Canceled');
+            res.redirect('/orders');
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+exports.postDeleteOrderDetails = (req, res, next) => {
+    Order.find({ 'orders.products': req.order.products._id })
+    .then(products => {
+        console.log(products);
+        const productId = req.body.productId;
+        products.product.findByIdAndRemove(productId)
+    })
+    .then(result => {
+        //const orderId = req.params.orderId;
+        console.log('Order Item Deleted');
+        res.redirect('/orders');
+    })
+    .catch(err => {
+        console.log(err);
+    });
+}
 
 
 exports.getAboutPage = (req, res, next) => {
