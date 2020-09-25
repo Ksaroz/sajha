@@ -1,16 +1,24 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var mongoose = require('mongoose');
-var User =  require('./models/user');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
+const User =  require('./models/user');
 
 const adminRouter = require('./routes/admin');
-var productsRouter = require('./routes/shop');
-var accountRouter = require('./routes/account');
+const productsRouter = require('./routes/shop');
+const accountRouter = require('./routes/account');
+
+const MONGODB_URI = 'mongodb+srv://ksaroz1992:mongodb7029@cluster0-13s3r.mongodb.net/sajha?retryWrites=true&w=majority';
 
 var app = express();
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: 'sessions' 
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,9 +35,15 @@ app.use('/js', express.static(__dirname + '/node_modules/owl.carousel/dist')); /
 app.use('/js', express.static(__dirname + '/node_modules/jquery-mousewheel')); // jquery mousewheel
 app.use('/css', express.static(__dirname + '/node_modules/owl.carousel/dist/assets')); // redirect OwlCarousel Css
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')); // redirect CSS bootstrap
+app.use(
+  session({ secret: 'my secret', resave: false, saveUninitialized: false, store: store })
+);
 
 app.use((req, res, next) => {
-  User.findById('5f50b5bc21e01d0cecd2b221')
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
   .then(user => {
     req.user = user;
     next();
@@ -37,16 +51,16 @@ app.use((req, res, next) => {
   .catch(err => console.log(err));
 });
 
-app.use('/', productsRouter);
 app.use('/admin', adminRouter);
-app.use('/account', accountRouter);
+app.use('/', productsRouter);
+app.use('/', accountRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
-mongoose.connect(process.env.MONGO_URL || 'mongodb+srv://ksaroz1992:mongodb7029@cluster0-13s3r.mongodb.net/sajha?retryWrites=true&w=majority',
+mongoose.connect(process.env.MONGO_URL || MONGODB_URI,
 { useUnifiedTopology: true, useNewUrlParser: true })
   .then(result => {
     User.findOne().then(user => {

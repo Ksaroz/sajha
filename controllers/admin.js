@@ -3,7 +3,10 @@ const Order = require('../models/order');
 //const { populate } = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
-    res.render('admin/addproducts', { title: 'Add Product'});
+    res.render('admin/addproducts', { 
+        title: 'Add Product',
+        isAuthenticated: req.session.isLoggedIn
+    });
 }
 
 exports.postAddProduct = (req, res, next) => {
@@ -35,7 +38,8 @@ exports.getAllProducts = (req, res, next) => {
         res.render('admin/allproducts', {
             prods: products,
             title: 'All products',
-            path: '/admin/products'
+            path: '/admin/products',
+            isAuthenticated: req.session.isLoggedIn
         });
     })
     .catch(err => console.log(err));
@@ -66,7 +70,8 @@ exports.getEditProducts = (req, res, next) => {
         res.render('admin/editProduct', {
             title: 'Edit product',
             path: '/admin/edit',
-            product: product
+            product: product,
+            isAuthenticated: req.session.isLoggedIn
             // editing: editMode,
 
         });
@@ -101,7 +106,8 @@ exports.getOrders = (req, res, next) => {
     .then(orders => {
         res.render('admin/orders', {
             title: 'Orders',
-            orders: orders
+            orders: orders,
+            isAuthenticated: req.session.isLoggedIn
         });
     })
     .catch(err => console.log(err));

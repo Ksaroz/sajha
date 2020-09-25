@@ -2,7 +2,10 @@ const Product = require('../models/product');
 const Order = require('../models/order');
 
 exports.getProductIndex = (req, res, next) => {
-    res.render('index', { title: 'Shop' });
+    res.render('index', { 
+        title: 'Shop',
+        isAuthenticated: req.session.isLoggedIn
+    });
 }
 
 exports.getAllProducts = (req, res, next) => {
@@ -11,7 +14,8 @@ exports.getAllProducts = (req, res, next) => {
         res.render('products/all-products', {
             prods: products,
             title: 'All products',
-            path: '/admin/add'
+            path: '/admin/add',
+            isAuthenticated: req.session.isLoggedIn
         });
     })
     
@@ -24,7 +28,8 @@ exports.getProductDetails = (req, res, next) => {
         res.render('products/details', { 
             title: 'product Details',
             product: product,
-            path: '/details'
+            path: '/details',
+            isAuthenticated: req.session.isLoggedIn
         });
     });
 }
@@ -38,22 +43,28 @@ exports.getProductCart = (req, res, next) => {
         const products = user.cart.items;
         res.render('products/cart', { 
             title: 'product Cart',
-            products: products
+            products: products,
+            isAuthenticated: req.session.isLoggedIn
         });
     })
     .catch(err => console.log(err));
 }
 
 exports.postProductCart = (req, res, next) => {
-    const productId = req.body.productId;
-    Product.findById(productId)
-    .then(product => {
-        return req.user.addToCart(product);
-    })
-    .then(result => {
-        console.log(result);
-        res.redirect('/cart');
-    });
+    const isAuthenticated = req.session.isLoggedIn;
+    if (!isAuthenticated) {
+        res.redirect('/login');
+    } else {
+        const productId = req.body.productId;
+        Product.findById(productId)
+        .then(product => {
+            return req.user.addToCart(product);
+        })
+        .then(result => {
+            console.log(result);
+            res.redirect('/cart');
+        });
+    }
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {
@@ -72,7 +83,8 @@ exports.getMyOrders = (req, res, next) => {
         res.render('products/order', {
             title: 'My Orders',
             path: '/orders',
-            orders: orders
+            orders: orders,
+            isAuthenticated: req.session.isLoggedIn
         });
     })
     .catch(err => console.log(err));
@@ -111,7 +123,8 @@ exports.getOrderDetails = (req, res, next) => {
         res.render('products/order-details', { 
             title: 'Order Details',
             orders: orders,
-            path: '/orders/details'
+            path: '/orders/details',
+            isAuthenticated: req.session.isLoggedIn
         });
     });
 }
@@ -147,5 +160,8 @@ exports.postDeleteOrderDetails = (req, res, next) => {
 
 
 exports.getAboutPage = (req, res, next) => {
-    res.render('about/about', { title: 'About Us'}); 
+    res.render('about/about', { 
+        title: 'About Us',
+        isAuthenticated: req.session.isLoggedIn
+    }); 
 }
