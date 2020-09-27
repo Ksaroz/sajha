@@ -71,11 +71,13 @@
                 <div class="cart_btns">
                     <form action="/orders/details/delete" method="POST">
                         <input type="hidden" name="productId" value="<%= p.product._id %>">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <button class="remove" type="submit">REMOVE</button>
                     </form>
     
-                    <form action="/orders/details/delete" method="POST">
+                    <form action="/orders/details/wishlist" method="POST">
                         <input type="hidden" name="productId" value="<%= p.product._id %>">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <div class="wishlist">MOVE TO WISHLIST</div>
                     </form>
                 </div>                

@@ -3,9 +3,11 @@ const Order = require('../models/order');
 //const { populate } = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
+    if (!req.session.isLoggedIn) {
+        return res.redirect('/login');
+    }
     res.render('admin/addproducts', { 
-        title: 'Add Product',
-        isAuthenticated: req.session.isLoggedIn
+        title: 'Add Product'        
     });
 }
 
@@ -38,8 +40,7 @@ exports.getAllProducts = (req, res, next) => {
         res.render('admin/allproducts', {
             prods: products,
             title: 'All products',
-            path: '/admin/products',
-            isAuthenticated: req.session.isLoggedIn
+            path: '/admin/products'
         });
     })
     .catch(err => console.log(err));
@@ -70,10 +71,8 @@ exports.getEditProducts = (req, res, next) => {
         res.render('admin/editProduct', {
             title: 'Edit product',
             path: '/admin/edit',
-            product: product,
-            isAuthenticated: req.session.isLoggedIn
+            product: product
             // editing: editMode,
-
         });
     })
     .catch(err => console.log(err));
@@ -106,8 +105,7 @@ exports.getOrders = (req, res, next) => {
     .then(orders => {
         res.render('admin/orders', {
             title: 'Orders',
-            orders: orders,
-            isAuthenticated: req.session.isLoggedIn
+            orders: orders
         });
     })
     .catch(err => console.log(err));

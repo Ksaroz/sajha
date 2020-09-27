@@ -1803,6 +1803,21 @@ input:focus {
 }
 
 /****************Account page ****************/
+.flashMsg {
+  margin: auto;
+  width: 90%;
+  border: 1px solid #555;
+  padding: 10px;
+  background: #999;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.flashMsg--error {
+  border-color: red;
+  background: #e68585;
+}
+
 .form-container {
   background: #fff;
   width: 300px;
@@ -1837,7 +1852,7 @@ input:focus {
   max-width: 300px;
   padding: 0 20px;
   position: absolute;
-  top: 130px;
+  top: 75px;
   -webkit-transition: -webkit-transform 1s;
   transition: -webkit-transform 1s;
   transition: transform 1s;

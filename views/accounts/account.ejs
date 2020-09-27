@@ -2,6 +2,9 @@
 <%- include('../includes/navigation.ejs') %>
 
     <div id="wrapper">
+        <% if (errorMsg) { %>
+            <div class="flashMsg flashMsg--error"><%= errorMsg %></div>
+        <% } %>
         <div class="container">
             <div class="row">
                 <div class="col">
@@ -10,18 +13,21 @@
                             <span onclick="login()">Login</span>
                             <span onclick="register()">Register</span>
                             <hr id="indicator">
-                        </div>
+                        </div>                        
                         <form action="/login" method="POST" id="loginForm">
                             <input type="email" name="email" placeholder="Email">
                             <input type="password" name="password" placeholder="Password">
                             <button type="submit" class="sajha-btn">Login</button>
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                             <a href="#">Forgot Password</a>
                         </form>
-                        <form action="" id="regForm">
+                        <form action="/register" method="POST" id="regForm">
                             <input type="text" name="username" placeholder="Username">
                             <input type="email" name="email" placeholder="Email">
                             <input type="password" name="password" placeholder="Password">
+                            <input type="password" name="confirmPassword" placeholder="confirm-Password">
                             <button type="submit" class="sajha-btn">Register</button>
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                             <a href="#">Already have an account?</a>
                         </form>
                         

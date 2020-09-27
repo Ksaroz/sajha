@@ -3,8 +3,7 @@ const Order = require('../models/order');
 
 exports.getProductIndex = (req, res, next) => {
     res.render('index', { 
-        title: 'Shop',
-        isAuthenticated: req.session.isLoggedIn
+        title: 'Shop'                
     });
 }
 
@@ -14,8 +13,7 @@ exports.getAllProducts = (req, res, next) => {
         res.render('products/all-products', {
             prods: products,
             title: 'All products',
-            path: '/admin/add',
-            isAuthenticated: req.session.isLoggedIn
+            path: '/admin/add'            
         });
     })
     
@@ -28,8 +26,7 @@ exports.getProductDetails = (req, res, next) => {
         res.render('products/details', { 
             title: 'product Details',
             product: product,
-            path: '/details',
-            isAuthenticated: req.session.isLoggedIn
+            path: '/details'            
         });
     });
 }
@@ -43,16 +40,14 @@ exports.getProductCart = (req, res, next) => {
         const products = user.cart.items;
         res.render('products/cart', { 
             title: 'product Cart',
-            products: products,
-            isAuthenticated: req.session.isLoggedIn
+            products: products            
         });
     })
     .catch(err => console.log(err));
 }
 
 exports.postProductCart = (req, res, next) => {
-    const isAuthenticated = req.session.isLoggedIn;
-    if (!isAuthenticated) {
+    if (!req.session.isLoggedIn) {
         res.redirect('/login');
     } else {
         const productId = req.body.productId;
@@ -61,7 +56,7 @@ exports.postProductCart = (req, res, next) => {
             return req.user.addToCart(product);
         })
         .then(result => {
-            console.log(result);
+            //console.log(result);
             res.redirect('/cart');
         });
     }
@@ -83,8 +78,7 @@ exports.getMyOrders = (req, res, next) => {
         res.render('products/order', {
             title: 'My Orders',
             path: '/orders',
-            orders: orders,
-            isAuthenticated: req.session.isLoggedIn
+            orders: orders            
         });
     })
     .catch(err => console.log(err));
@@ -100,7 +94,7 @@ exports.postOrder = (req, res, next) => {
         });
         const order = new Order({
             user: {
-                name: req.user.name,
+                email: req.user.email,
                 userId: req.user
             },
             products: products
@@ -123,8 +117,7 @@ exports.getOrderDetails = (req, res, next) => {
         res.render('products/order-details', { 
             title: 'Order Details',
             orders: orders,
-            path: '/orders/details',
-            isAuthenticated: req.session.isLoggedIn
+            path: '/orders/details'            
         });
     });
 }
@@ -161,7 +154,6 @@ exports.postDeleteOrderDetails = (req, res, next) => {
 
 exports.getAboutPage = (req, res, next) => {
     res.render('about/about', { 
-        title: 'About Us',
-        isAuthenticated: req.session.isLoggedIn
+        title: 'About Us'        
     }); 
 }

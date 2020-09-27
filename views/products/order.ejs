@@ -71,6 +71,7 @@
                 <div class="orderDetails"><a href="/orders/details/<%= order._id %>">Order Details</a></div>                
                 <form action="/orders/delete" method="POST">
                     <input type="hidden" name="orderId" value="<%= order._id %>">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button class="orderCancel" type="submit">Cancel Order</button>
                 </form>
                 <!-- <div class="orderCancel"><a href="">Cancel Order</a></div> -->

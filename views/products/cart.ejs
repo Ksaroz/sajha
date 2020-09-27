@@ -69,11 +69,13 @@
             <div class="cart_btns">
                 <form action="/cart/delete" method="POST">
                     <input type="hidden" name="productId" value="<%= product.productId._id %>">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button class="remove" type="submit">REMOVE</button>
                 </form>
 
-                <form action="/cart/delete" method="POST">
+                <form action="/wishlist" method="POST">
                     <input type="hidden" name="productId" value="<%= product.productId._id %>">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <div class="wishlist">MOVE TO WISHLIST</div>
                 </form>
             </div>
@@ -163,7 +165,8 @@
             </div>
         </div>
         <div class="checkout">
-            <form action="/orders" method="POST">                
+            <form action="/orders" method="POST">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">               
                 <button class="checkout_btn" type="submit">Place Order &#8594</button>
             </form>
             
