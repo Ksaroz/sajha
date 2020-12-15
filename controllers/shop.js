@@ -2,8 +2,10 @@ const Product = require('../models/product');
 const Order = require('../models/order');
 
 exports.getProductIndex = (req, res, next) => {
+    const allProducts = new Product();
     res.render('index', { 
-        title: 'Shop'                
+        title: 'Shop',
+        allProducts: allProducts                
     });
 }
 

@@ -1,6 +1,6 @@
-const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
+const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
@@ -11,7 +11,7 @@ const flash = require('connect-flash');
 const User =  require('./models/user');
 
 const MONGODB_URI = 'mongodb+srv://ksaroz1992:mongodb7029@cluster0-13s3r.mongodb.net/sajha?retryWrites=true&w=majority';
-
+const SESSION_TIME = 1000 * 60;
 var app = express();
 const store = new MongoDBStore({
   uri: MONGODB_URI,
@@ -42,7 +42,7 @@ app.use(
     secret: 'my secret',
     resave: false,
     saveUninitialized: false,
-    store: store 
+    store: store
   })
 );
 app.use(csrfProtection);
@@ -60,12 +60,12 @@ app.use((req, res, next) => {
   .catch(err => console.log(err));
 });
 
+
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
   next();
 });
-
 app.use('/admin', adminRouter);
 app.use('/', productsRouter);
 app.use('/', accountRouter);

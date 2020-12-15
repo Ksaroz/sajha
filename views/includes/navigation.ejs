@@ -15,8 +15,8 @@
                 <% } %>
                 
                 <% if (!isAuthenticated) { %>
-                    <li><a href="/login">Sign In</a></li>
-                    <li><a href="/register">Sign Up</a></li>
+                    <li onclick="login()"><a href="/login">Sign In</a></li>
+                    <li onclick="register()"><a href="/register">Sign Up</a></li>
                 <% } else { %>
                 <li>
                     <form action="/logout" method="POST">

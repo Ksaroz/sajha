@@ -1,5 +1,5 @@
 <!-- All Product slider -->
-
+<% if ( allProducts.length > 0 ) { %>
 <div id="wrapper">
     <div class="container-fluid">
         <div class="product-heading">
@@ -12,214 +12,34 @@
         </div>
         <hr>
     <div class="owl-carousel owl-theme">
+        <% for ( let product of allProduct) { %>
         <div class="item">
             <div class="product-cards">
                 <div class="shadow"></div>
-                <img src="https://www.banglashoppers.com/pub/media/catalog/product/cache/b406a9cdc224c57c443df60b8bd9edbe/a/b/abny_-_hd_flawless_foundation_-_natural_-_ahdf01_-_28ml.jpg" alt="" />
+                <img src="<%= product.imageUrl %>" alt="<%= product.title %>" />
                 <div class="image_overlay"></div>
-                <div id="view_details">View details</div>
+                <div id="view_details">
+                    <a href="/details/<%= product._id %>">View Details</a>
+                </div>
                 <div class="detail">        	
                     <div class="detail-container">
-                        <span class="product_price">$39</span>
-                        <span class="product_name">Adidas Originals</span>    
-                        <p>Men's running shirt</p>                   
-                        <div class="product-options">
-                            <a href="#" class="btn product-btn">Make a Wish</a>
-                            <a href="#" class="btn product-btn">Add To Card</a>
-                    </div>                       
+                        <span class="product_name"><%= product.title %>...</span>    
+                            <p>ratings</p> 
+                            <span class="product_price">Rs.<%= product.price %></span>                  
+                            <span class="product_old_price">Rs.<%= product.price %></span>
+                            <div class="product-options">
+                                <a href="#" class="btn product-btn">WishList</a>                                
+                                <%- include('../includes/add-to-cart.ejs', {product: product}) %>                                  
+                        </div>                                           
                     </div>                         
                 </div>
             </div>
         </div>
-        <div class="item"><div class="product-cards">
-                <div class="shadow"></div>
-                <img src="https://www.banglashoppers.com/pub/media/catalog/product/cache/b406a9cdc224c57c443df60b8bd9edbe/a/b/abny_-_hd_flawless_foundation_-_natural_-_ahdf01_-_28ml.jpg" alt="" />
-                <div class="image_overlay"></div>
-                <div id="view_details">View details</div>
-                <div class="detail">        	
-                    <div class="detail-container">
-                        <span class="product_price">$39</span>
-                        <span class="product_name">Adidas Originals</span>    
-                        <p>Men's running shirt</p>                   
-                        <div class="product-options">
-                            <a href="#" class="btn product-btn">Make a Wish</a>
-                            <a href="#" class="btn product-btn">Add To Card</a>
-                    </div>                       
-                    </div>                         
-                </div>
-            </div></div>
-        <div class="item"><div class="product-cards">
-                <div class="shadow"></div>
-                <img src="https://www.banglashoppers.com/pub/media/catalog/product/cache/b406a9cdc224c57c443df60b8bd9edbe/a/b/abny_-_hd_flawless_foundation_-_natural_-_ahdf01_-_28ml.jpg" alt="" />
-                <div class="image_overlay"></div>
-                <div id="view_details">View details</div>
-                <div class="detail">        	
-                    <div class="detail-container">
-                        <span class="product_price">$39</span>
-                        <span class="product_name">Adidas Originals</span>    
-                        <p>Men's running shirt</p>                   
-                        <div class="product-options">
-                            <a href="#" class="btn product-btn">Make a Wish</a>
-                            <a href="#" class="btn product-btn">Add To Card</a>
-                    </div>                       
-                    </div>                         
-                </div>
-            </div></div>
-        <div class="item"><div class="product-cards">
-                <div class="shadow"></div>
-                <img src="https://www.banglashoppers.com/pub/media/catalog/product/cache/b406a9cdc224c57c443df60b8bd9edbe/a/b/abny_-_hd_flawless_foundation_-_natural_-_ahdf01_-_28ml.jpg" alt="" />
-                <div class="image_overlay"></div>
-                <div id="view_details">View details</div>
-                <div class="detail">        	
-                    <div class="detail-container">
-                        <span class="product_price">$39</span>
-                        <span class="product_name">Adidas Originals</span>    
-                        <p>Men's running shirt</p>                   
-                        <div class="product-options">
-                            <a href="#" class="btn product-btn">Make a Wish</a>
-                            <a href="#" class="btn product-btn">Add To Card</a>
-                    </div>                       
-                    </div>                         
-                </div>
-            </div></div>
-        <div class="item"><div class="product-cards">
-                <div class="shadow"></div>
-                <img src="https://www.banglashoppers.com/pub/media/catalog/product/cache/b406a9cdc224c57c443df60b8bd9edbe/a/b/abny_-_hd_flawless_foundation_-_natural_-_ahdf01_-_28ml.jpg" alt="" />
-                <div class="image_overlay"></div>
-                <div id="view_details">View details</div>
-                <div class="detail">        	
-                    <div class="detail-container">
-                        <span class="product_price">$39</span>
-                        <span class="product_name">Adidas Originals</span>    
-                        <p>Men's running shirt</p>                   
-                        <div class="product-options">
-                            <a href="#" class="btn product-btn">Make a Wish</a>
-                            <a href="#" class="btn product-btn">Add To Card</a>
-                    </div>                       
-                    </div>                         
-                </div>
-            </div></div>
-        <div class="item"><div class="product-cards">
-                <div class="shadow"></div>
-                <img src="https://www.banglashoppers.com/pub/media/catalog/product/cache/b406a9cdc224c57c443df60b8bd9edbe/a/b/abny_-_hd_flawless_foundation_-_natural_-_ahdf01_-_28ml.jpg" alt="" />
-                <div class="image_overlay"></div>
-                <div id="view_details">View details</div>
-                <div class="detail">        	
-                    <div class="detail-container">
-                        <span class="product_price">$39</span>
-                        <span class="product_name">Adidas Originals</span>    
-                        <p>Men's running shirt</p>                   
-                        <div class="product-options">
-                            <a href="#" class="btn product-btn">Make a Wish</a>
-                            <a href="#" class="btn product-btn">Add To Card</a>
-                    </div>                       
-                    </div>                         
-                </div>
-            </div></div>
-        <div class="item"><div class="product-cards">
-                <div class="shadow"></div>
-                <img src="https://www.banglashoppers.com/pub/media/catalog/product/cache/b406a9cdc224c57c443df60b8bd9edbe/a/b/abny_-_hd_flawless_foundation_-_natural_-_ahdf01_-_28ml.jpg" alt="" />
-                <div class="image_overlay"></div>
-                <div id="view_details">View details</div>
-                <div class="detail">        	
-                    <div class="detail-container">
-                        <span class="product_price">$39</span>
-                        <span class="product_name">Adidas Originals</span>    
-                        <p>Men's running shirt</p>                   
-                        <div class="product-options">
-                            <a href="#" class="btn product-btn">Make a Wish</a>
-                            <a href="#" class="btn product-btn">Add To Card</a>
-                    </div>                       
-                    </div>                         
-                </div>
-            </div></div>
-        <div class="item"><div class="product-cards">
-                <div class="shadow"></div>
-                <img src="https://www.banglashoppers.com/pub/media/catalog/product/cache/b406a9cdc224c57c443df60b8bd9edbe/a/b/abny_-_hd_flawless_foundation_-_natural_-_ahdf01_-_28ml.jpg" alt="" />
-                <div class="image_overlay"></div>
-                <div id="view_details">View details</div>
-                <div class="detail">        	
-                    <div class="detail-container">
-                        <span class="product_price">$39</span>
-                        <span class="product_name">Adidas Originals</span>    
-                        <p>Men's running shirt</p>                   
-                        <div class="product-options">
-                            <a href="#" class="btn product-btn">Make a Wish</a>
-                            <a href="#" class="btn product-btn">Add To Card</a>
-                    </div>                       
-                    </div>                         
-                </div>
-            </div></div>
-        <div class="item"><div class="product-cards">
-                <div class="shadow"></div>
-                <img src="https://www.banglashoppers.com/pub/media/catalog/product/cache/b406a9cdc224c57c443df60b8bd9edbe/a/b/abny_-_hd_flawless_foundation_-_natural_-_ahdf01_-_28ml.jpg" alt="" />
-                <div class="image_overlay"></div>
-                <div id="view_details">View details</div>
-                <div class="detail">        	
-                    <div class="detail-container">
-                        <span class="product_price">$39</span>
-                        <span class="product_name">Adidas Originals</span>    
-                        <p>Men's running shirt</p>                   
-                        <div class="product-options">
-                            <a href="#" class="btn product-btn">Make a Wish</a>
-                            <a href="#" class="btn product-btn">Add To Card</a>
-                    </div>                       
-                    </div>                         
-                </div>
-            </div></div>
-        <div class="item"><div class="product-cards">
-                <div class="shadow"></div>
-                <img src="https://www.banglashoppers.com/pub/media/catalog/product/cache/b406a9cdc224c57c443df60b8bd9edbe/a/b/abny_-_hd_flawless_foundation_-_natural_-_ahdf01_-_28ml.jpg" alt="" />
-                <div class="image_overlay"></div>
-                <div id="view_details">View details</div>
-                <div class="detail">        	
-                    <div class="detail-container">
-                        <span class="product_price">$39</span>
-                        <span class="product_name">Adidas Originals</span>    
-                        <p>Men's running shirt</p>                   
-                        <div class="product-options">
-                            <a href="#" class="btn product-btn">Make a Wish</a>
-                            <a href="#" class="btn product-btn">Add To Card</a>
-                    </div>                       
-                    </div>                         
-                </div>
-            </div>></div>
-        <div class="item"><div class="product-cards">
-                <div class="shadow"></div>
-                <img src="https://www.banglashoppers.com/pub/media/catalog/product/cache/b406a9cdc224c57c443df60b8bd9edbe/a/b/abny_-_hd_flawless_foundation_-_natural_-_ahdf01_-_28ml.jpg" alt="" />
-                <div class="image_overlay"></div>
-                <div id="view_details">View details</div>
-                <div class="detail">        	
-                    <div class="detail-container">
-                        <span class="product_price">$39</span>
-                        <span class="product_name">Adidas Originals</span>    
-                        <p>Men's running shirt</p>                   
-                        <div class="product-options">
-                            <a href="#" class="btn product-btn">Make a Wish</a>
-                            <a href="#" class="btn product-btn">Add To Card</a>
-                    </div>                       
-                    </div>                         
-                </div>
-            </div>></div>
-        <div class="item"><div class="product-cards">
-                <div class="shadow"></div>
-                <img src="https://www.banglashoppers.com/pub/media/catalog/product/cache/b406a9cdc224c57c443df60b8bd9edbe/a/b/abny_-_hd_flawless_foundation_-_natural_-_ahdf01_-_28ml.jpg" alt="" />
-                <div class="image_overlay"></div>
-                <div id="view_details">View details</div>
-                <div class="detail">        	
-                    <div class="detail-container">
-                        <span class="product_price">$39</span>
-                        <span class="product_name">Adidas Originals</span>    
-                        <p>Men's running shirt</p>                   
-                        <div class="product-options">
-                            <a href="#" class="btn product-btn">Make a Wish</a>
-                            <a href="#" class="btn product-btn">Add To Card</a>
-                    </div>                       
-                    </div>                         
-                </div>
-            </div>></div>
+        <% } %>        
     </div>
 </div>
 </div>
+<% } %>
+
 
 <!-- /All Product slider -->
