@@ -2,9 +2,7 @@ const Product = require('../models/product');
 const Order = require('../models/order');
 
 exports.getProductIndex = (req, res, next) => {
-    res.render('index', { 
-        title: 'Shop'                
-    });
+    res.send('hello from express');
 }
 
 exports.getAllProducts = (req, res, next) => {

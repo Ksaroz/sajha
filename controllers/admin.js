@@ -12,51 +12,47 @@ exports.getAddProduct = (req, res, next) => {
 }
 
 exports.postAddProduct = (req, res, next) => {
-    const productTitle = (req.body.title);
-    const productImageUrl = (req.body.imageUrl); 
-    const productPrice = (req.body.price);
+    const productName = (req.body.name);
+    const productImageUrl = (req.body.image); 
     const productDescription = (req.body.description);
+    const productPrice = (req.body.price);
 
     const product = new Product({
-        title: productTitle,
-        price: productPrice,
+        name: productName,
+        imageUrl: productImageUrl,        
         description: productDescription,
-        imageUrl: productImageUrl,
-        userId: req.user
+        price: productPrice,
     });
-    product.save()
-    .then(result => {
-        console.log('New Product Added');
-        res.redirect('/products')
-    })
-    .catch(err => {
-        console.log(err);
-    });
+    product.save().then(createdProduct => {
+        res.status(201).json({
+            message: 'Product Added Successfully',
+            prodId: createdProduct._id
+            });        
+    });        
+    // const product = req.body;
+    //console.log(product);
 }
 
 exports.getAllProducts = (req, res, next) => {
     Product.find()
-    .then(products => {
-        res.render('admin/allproducts', {
-            prods: products,
-            title: 'All products',
-            path: '/admin/products'
+    .then(products => {        
+        res.status(200).json({
+            message: 'Product fetch Successfully',
+            products: products
         });
-    })
-    .catch(err => console.log(err));
+    });    
 }
 
-exports.postDeleteProduct = (req, res, next) => {
-    const productId = req.body.productId;
-    Product.findByIdAndRemove(productId)
+exports.deleteProduct = (req, res, next) => {
+    const productId = req.params.id;
+    Product.deleteOne({ _id: productId })
     .then(() => {
         console.log('product Deleted');
-        res.redirect('/admin/products');
-    })
-    .catch(err => console.log(err));
+        res.status(200).json({message: 'Product Deleted!'});        
+    });    
 }
 
-exports.getEditProducts = (req, res, next) => {
+exports.getEditProducts = (req, res, next) => { 
     // const editMode = req.query.edit;
     // if(!editMode) {
     //     return res.redirect('/');
