@@ -52,49 +52,54 @@ exports.deleteProduct = (req, res, next) => {
     });    
 }
 
-exports.getEditProducts = (req, res, next) => { 
-    // const editMode = req.query.edit;
-    // if(!editMode) {
-    //     return res.redirect('/');
-    // }
-
-    const productId = req.params.productId;
-    Product.findById(productId)
-    .then(product => {
-        if(!product) {
-            return res.redirect('/');
+exports.getEditProducts = (req, res, next) => {
+    Product.findById(req.params.id).then(product => {
+        if(product) {
+            res.status(200).json(product);
+        } else {
+            res.status(404).json({message: 'Product not found!'});
         }
-        res.render('admin/editProduct', {
-            title: 'Edit product',
-            path: '/admin/edit',
-            product: product
-            // editing: editMode,
-        });
     })
-    .catch(err => console.log(err));
 }
 
-exports.postEditProducts = (req, res, next) => {
-    const productId = req.body.productId;
-    const updatedTitle = req.body.title;
-    const updatedPrice = req.body.price;
-    const updatedImageUrl = req.body.imageUrl;
-    const updatedDesc = req.body.description;
+exports.putEditProducts = (req, res, next) => {
+    const product = new Product({
+        _id: req.params.id,
+        name: req.body.name,
+        imageUrl: req.body.image,        
+        description: req.body.description,
+        price: req.body.price 
+    });
+    Product.updateOne({_id: req.params.id}, product)
+    .then(result => {        
+        res.status(200).json({message: 'Update Successful!'});
+    });    
+}
 
-    Product.findById(productId)
-    .then(product => {
-        product.title = updatedTitle;
-        product.imageUrl = updatedImageUrl;
-        product.price = updatedPrice;
-        product.description = updatedDesc;
-        return product.save();
-    })
-    .then(result => {
-        console.log('Product Updated!');
-        res.redirect('/admin/products ');
-    })
-    .catch(err => console.log(err));
-};
+/* backend post edit products function */
+
+// exports.postEditProducts = (req, res, next) => {
+//     const productId = req.body.productId;
+//     const updatedTitle = req.body.title;
+//     const updatedPrice = req.body.price;
+//     const updatedImageUrl = req.body.imageUrl;
+//     const updatedDesc = req.body.description;
+
+//     Product.findById(productId)
+//     .then(product => {
+//         product.title = updatedTitle;
+//         product.imageUrl = updatedImageUrl;
+//         product.price = updatedPrice;
+//         product.description = updatedDesc;
+//         return product.save();
+//     })
+//     .then(result => {
+//         console.log('Product Updated!');
+//         res.redirect('/admin/products ');
+//     })
+//     .catch(err => console.log(err));
+// };
+/* End of function */
 
 exports.getOrders = (req, res, next) => {
     Order.find({ 'user.userId': req.user._id })

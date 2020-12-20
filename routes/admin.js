@@ -13,7 +13,10 @@ router.post('/add', adminController.postAddProduct);
 router.get('/products', adminController.getAllProducts);
 
 /* GET Edit Products for admin */
-//router.get('/edit/:productId', adminController.getEditProducts);
+router.get('/product/update/:id', adminController.getEditProducts);
+
+/* PUT Edit Products for admin */
+router.put('/product/update/:id', adminController.putEditProducts);
 
 /* POST Edit Products by admin */
 //router.post('/edit', adminController.postEditProducts);
