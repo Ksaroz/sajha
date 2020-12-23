@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Category = require('../models/category');
 const Order = require('../models/order');
 //const { populate } = require('../models/product');
 
@@ -28,9 +29,23 @@ exports.postAddProduct = (req, res, next) => {
             message: 'Product Added Successfully',
             prodId: createdProduct._id
             });        
-    });        
-    // const product = req.body;
-    //console.log(product);
+    });    
+}
+
+exports.postAddCategory = (req, res, next) => {
+    const categoryName = (req.body.categoryName);
+    const subCategoryName = (req.body.subCategoryName);
+
+    const category = new Category({
+        categoryName: categoryName,
+        subCategoryName: subCategoryName
+    });
+    category.save().then(savedCategory => {
+        res.status(201).json({
+            message: 'Category Added Successfully',
+            catId: savedCategory._id
+        });
+    });
 }
 
 exports.getAllProducts = (req, res, next) => {
@@ -43,12 +58,30 @@ exports.getAllProducts = (req, res, next) => {
     });    
 }
 
+exports.getAllCategories = (req, res, next) => {
+    Category.find()
+    .then(categories => {        
+        res.status(200).json({
+            message: 'Categories fetch Successfully',
+            categories: categories
+        });
+    });    
+}
+
 exports.deleteProduct = (req, res, next) => {
     const productId = req.params.id;
     Product.deleteOne({ _id: productId })
-    .then(() => {
-        console.log('product Deleted');
+    .then(() => {        
         res.status(200).json({message: 'Product Deleted!'});        
+    });    
+}
+
+exports.deleteCategory = (req, res, next) => {
+    const categoryId = req.params.id;
+    Category.deleteOne({ _id: categoryId })
+    .then(() => {
+        console.log('Category Deleted');
+        res.status(200).json({message: 'Category Deleted!'});        
     });    
 }
 
@@ -62,6 +95,19 @@ exports.getEditProducts = (req, res, next) => {
     })
 }
 
+/* backend get edit categories function */
+exports.getEditCategories = (req, res, next) => {
+    Category.findById(req.params.id).then(category => {
+        if(category) {
+            res.status(200).json(category);
+        } else {
+            res.status(404).json({message: 'Category not found!'});
+        }
+    })
+}
+/* end of function */
+
+/* backend post edit products function */
 exports.putEditProducts = (req, res, next) => {
     const product = new Product({
         _id: req.params.id,
@@ -74,31 +120,21 @@ exports.putEditProducts = (req, res, next) => {
     .then(result => {        
         res.status(200).json({message: 'Update Successful!'});
     });    
-}
+} 
+/* End of function */
 
-/* backend post edit products function */
-
-// exports.postEditProducts = (req, res, next) => {
-//     const productId = req.body.productId;
-//     const updatedTitle = req.body.title;
-//     const updatedPrice = req.body.price;
-//     const updatedImageUrl = req.body.imageUrl;
-//     const updatedDesc = req.body.description;
-
-//     Product.findById(productId)
-//     .then(product => {
-//         product.title = updatedTitle;
-//         product.imageUrl = updatedImageUrl;
-//         product.price = updatedPrice;
-//         product.description = updatedDesc;
-//         return product.save();
-//     })
-//     .then(result => {
-//         console.log('Product Updated!');
-//         res.redirect('/admin/products ');
-//     })
-//     .catch(err => console.log(err));
-// };
+/* backend post edit categories function */
+exports.putEditCategories = (req, res, next) => {
+    const category = new Category({
+        _id: req.params.id,
+        categoryName: req.body.categoryName,
+        subCategoryName: req.body.subCategoryName,                
+    });
+    Category.updateOne({_id: req.params.id}, category)
+    .then(result => {        
+        res.status(200).json({message: 'Update Successful!'});
+    });    
+} 
 /* End of function */
 
 exports.getOrders = (req, res, next) => {
