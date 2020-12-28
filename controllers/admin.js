@@ -1,29 +1,33 @@
 const Product = require('../models/product');
 const Category = require('../models/category');
+const Attribute = require('../models/attribute');
 const Order = require('../models/order');
 //const { populate } = require('../models/product');
 
-exports.getAddProduct = (req, res, next) => {
-    if (!req.session.isLoggedIn) {
-        return res.redirect('/login');
-    }
-    res.render('admin/addproducts', { 
-        title: 'Add Product'        
-    });
-}
+// exports.getAddProduct = (req, res, next) => {
+//     if (!req.session.isLoggedIn) {
+//         return res.redirect('/login');
+//     }
+//     res.render('admin/addproducts', { 
+//         title: 'Add Product'        
+//     });
+// }
 
 exports.postAddProduct = (req, res, next) => {
     const productName = (req.body.name);
     const productImageUrl = (req.body.image); 
     const productDescription = (req.body.description);
     const productPrice = (req.body.price);
+    const productCategory = (req.body.category)
 
     const product = new Product({
         name: productName,
         imageUrl: productImageUrl,        
         description: productDescription,
         price: productPrice,
+        categoryId: productCategory
     });
+    console.log(product);
     product.save().then(createdProduct => {
         res.status(201).json({
             message: 'Product Added Successfully',
@@ -48,9 +52,27 @@ exports.postAddCategory = (req, res, next) => {
     });
 }
 
+exports.postAddAttribute = (req, res, next) => {
+    const attributeName = (req.body.attributeName);
+    const variationName = (req.body.variationName);
+
+    const attribute = new Attribute ({
+        attributeName: attributeName,
+        variationName: variationName
+    });
+    attribute.save().then(savedAttribute => {
+        res.status(201).json({
+            message: 'Category Added Successfully',
+            attId: savedAttribute._id
+        });
+    });
+}
+
 exports.getAllProducts = (req, res, next) => {
     Product.find()
-    .then(products => {        
+    .populate('categoryId')
+    .then(products => {    
+        console.log(products);    
         res.status(200).json({
             message: 'Product fetch Successfully',
             products: products
@@ -64,6 +86,16 @@ exports.getAllCategories = (req, res, next) => {
         res.status(200).json({
             message: 'Categories fetch Successfully',
             categories: categories
+        });
+    });    
+}
+
+exports.getAllAttributes = (req, res, next) => {
+    Attribute.find()
+    .then(attributes => {        
+        res.status(200).json({
+            message: 'Attributes fetch Successfully',
+            attributes: attributes
         });
     });    
 }
@@ -85,6 +117,15 @@ exports.deleteCategory = (req, res, next) => {
     });    
 }
 
+exports.deleteAttribute = (req, res, next) => {
+    const attributeId = req.params.id;
+    Attribute.deleteOne({ _id: attributeId })
+    .then(() => {
+        console.log('Attribute Deleted');
+        res.status(200).json({message: 'Attribute Deleted!'});        
+    });    
+}
+
 exports.getEditProducts = (req, res, next) => {
     Product.findById(req.params.id).then(product => {
         if(product) {
@@ -102,6 +143,18 @@ exports.getEditCategories = (req, res, next) => {
             res.status(200).json(category);
         } else {
             res.status(404).json({message: 'Category not found!'});
+        }
+    })
+}
+/* end of function */
+
+/* backend get edit categories function */
+exports.getEditAttributes = (req, res, next) => {
+    Attribute.findById(req.params.id).then(attribute => {
+        if(attribute) {
+            res.status(200).json(attribute);
+        } else {
+            res.status(404).json({message: 'Attribute not found!'});
         }
     })
 }
@@ -131,6 +184,19 @@ exports.putEditCategories = (req, res, next) => {
         subCategoryName: req.body.subCategoryName,                
     });
     Category.updateOne({_id: req.params.id}, category)
+    .then(result => {        
+        res.status(200).json({message: 'Update Successful!'});
+    });    
+} 
+/* End of function */
+
+exports.putEditAttributes = (req, res, next) => {
+    const attribute = new Attribute({
+        _id: req.params.id,
+        attributeName: req.body.attributeName,
+        variationName: req.body.variationName,                
+    });
+    Attribute.updateOne({_id: req.params.id}, attribute)
     .then(result => {        
         res.status(200).json({message: 'Update Successful!'});
     });    
