@@ -72,7 +72,7 @@ exports.getAllProducts = (req, res, next) => {
     Product.find()
     .populate('categoryId')
     .then(products => {    
-        console.log(products);    
+        //console.log(products);    
         res.status(200).json({
             message: 'Product fetch Successfully',
             products: products
