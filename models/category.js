@@ -5,12 +5,13 @@ const Schema = mongoose.Schema;
 const categorySchema = new Schema({
     categoryName: {
         type: String,
-        required: true
+        required: true,
+        trim: true,
+        unique: true
     },
-    subCategoryName: {
-        type: String,
-        required: true
-    },    
+    parentId: {
+        type: String      
+    } 
     // productId: {
     //     type: Schema.Types.ObjectId,
     //     ref: 'Product'

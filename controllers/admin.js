@@ -38,18 +38,31 @@ exports.postAddProduct = (req, res, next) => {
 
 exports.postAddCategory = (req, res, next) => {
     const categoryName = (req.body.categoryName);
-    const subCategoryName = (req.body.subCategoryName);
+    //const subCategoryName = (req.body.subCategoryName);
 
     const category = new Category({
         categoryName: categoryName,
-        subCategoryName: subCategoryName
+        //subCategoryName: subCategoryName
     });
-    category.save().then(savedCategory => {
-        res.status(201).json({
-            message: 'Category Added Successfully',
-            catId: savedCategory._id
-        });
-    });
+    category.save((error, category) => {
+        if(error) {
+            return res.status(400).json({ error, message: "Sorry! you cannot repeat the same category name!" });
+        } 
+            
+        if(category) {
+            return res.status(201).json({ 
+                categories: category,
+                catId: category._id,                
+                message: "Category Added Successfully!"});
+         }
+    //.then(savedCategory => {
+    //     res.status(201).json({
+    //         categories: savedCategory,
+    //         message: 'Category Added Successfully',
+    //         catId: savedCategory._id
+    //     });
+    // }).catch(err => console.log(err));
+});
 }
 
 exports.postAddAttribute = (req, res, next) => {
@@ -65,7 +78,7 @@ exports.postAddAttribute = (req, res, next) => {
             message: 'Category Added Successfully',
             attId: savedAttribute._id
         });
-    });
+    }).catch(err => console.log(err));
 }
 
 exports.getAllProducts = (req, res, next) => {
