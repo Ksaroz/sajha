@@ -21,26 +21,32 @@ exports.postLogin = (req, res, next) => {
     User.findOne({ email: email })
     .then(user => {
         if (!user) {
-            req.flash('error', 'Invalid Email or Password.');
-           return res.redirect('/login');
+            res.status(401).json({
+                message: "Authentication Failed";
+            });
         }
         bcrypt
         .compare(password, user.password)
         .then(matchedPassword => {
-            if (matchedPassword) {
-                req.session.isLoggedIn = true;
-                req.session.user = user;
-                return req.session.save(err => {
-                    console.log(err);
-                    res.redirect('/');
+
+            if (!matchedPassword) {
+                res.status(401).json({
+                    message: "Authentication Failed"
                 });
             }
+            req.session.isLoggedIn = true;
+            req.session.user = user;
+            return req.session.save(err => {
+                console.log(err);
+                res.redirect('/');
+            });
             req.flash('error', 'Invalid Email or Password.');
             res.redirect('/login');
         })
         .catch(err => {
-            console.log(err);
-            res.redirect('/login');
+            res.status(401).json({
+                message: "Authentication Failed"
+            });
         });
     })
     .catch(err => { 

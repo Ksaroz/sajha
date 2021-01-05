@@ -5,6 +5,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
+const checkAuth = require('./middleware/auth');
 //const session = require('express-session');
 //const MongoDBStore = require('connect-mongodb-session')(session);
 //const csrf = require('csurf');
@@ -25,7 +26,7 @@ app.set('view engine', 'ejs');
 
 const adminRouter = require('./routes/admin');
 const productsRouter = require('./routes/shop');
-const accountRouter = require('./routes/account');
+const userRouter = require('./routes/user');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -70,7 +71,7 @@ app.use(cors());
 
 app.use('/admin', adminRouter);
 app.use('/', productsRouter);
-app.use('/', accountRouter);
+app.use('/api/user', userRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
