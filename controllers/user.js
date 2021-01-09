@@ -7,10 +7,10 @@ exports.postSignUp = (req, res, next) => {
     .then(hashed => {
         const user = new User({
             email: req.body.email,
-            password: hashed
+            password: hashed            
         });
     user.save()
-    .then(result => {
+    .then(result => {        
         res.status(201).json({
             message: "User Created Successfully",
             result: result
@@ -22,9 +22,9 @@ exports.postSignUp = (req, res, next) => {
 
 exports.postLogin = (req, res, next) => {
     const email = req.body.email;
-    const password = req.body.password;
+    const password = req.body.password;        
     User.findOne({ email: email })
-    .then(user => {
+    .then(user => {        
         if (!user) {
             res.status(401).json({
                 message: "Authentication Failed"
@@ -42,9 +42,11 @@ exports.postLogin = (req, res, next) => {
             const token = jwt.sign({email: user.email, userId: user._id},
                 'secret_this_should_be_longer',
                 {expiresIn: "1h"});
+            const userRole = user.role;
             res.status(200).json({
                 token: token,
-                expiresIn: 3600
+                expiresIn: 3600,
+                userRole: userRole
             });
         })
         .catch(err => {
