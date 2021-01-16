@@ -7,6 +7,9 @@ const adminController = require('../controllers/admin');
 /* GET addProducts page */
 //router.get('/add', adminController.getAddProduct);
 
+/* POST addUser */
+router.post('/add/user', checkAuth, adminController.postAddUser);
+
 /* POST addProducts */
 router.post('/add', checkAuth, adminController.postAddProduct);
 
@@ -15,6 +18,9 @@ router.post('/add/category', checkAuth, adminController.postAddCategory);
 
 /* POST addAttribute */
 router.post('/add/attribute', checkAuth, adminController.postAddAttribute);
+
+/* GET Allusers for admin */
+router.get('/users', adminController.getAllUsers);
 
 /* GET AllProducts for admin */
 router.get('/products', adminController.getAllProducts);
@@ -45,6 +51,9 @@ router.put('/add/attribute/update/:id', checkAuth, adminController.putEditAttrib
 
 /* POST Edit Products by admin */
 //router.post('/edit', adminController.postEditProducts);
+
+/* POST Delete Products by admin */
+router.delete('/user/delete/:id', checkAuth, adminController.deleteUser);
 
 /* POST Delete Products by admin */
 router.delete('/product/delete/:id', checkAuth, adminController.deleteProduct);

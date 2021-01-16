@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+const User = require('../models/user');
 const Product = require('../models/product');
 const Category = require('../models/category');
 const Attribute = require('../models/attribute');
@@ -12,6 +14,32 @@ const Order = require('../models/order');
 //         title: 'Add Product'        
 //     });
 // }
+
+exports.postAddUser = (req, res, next) => {
+    const userFirstName = (req.body.firstname);
+    const userLastName = (req.body.lastname); 
+    const userEmail = (req.body.email);
+    const userPassword = (req.body.password);
+    const userRole = (req.body.role);
+
+    bcrypt.hash(userPassword, 12)
+    .then(hashed => {
+        const user = new User({
+            firstname: userFirstName,
+            lastname: userLastName,        
+            email: userEmail,
+            password: hashed,
+            role: userRole         
+        });    
+        console.log(user);
+    user.save().then(createdUser => {
+        res.status(201).json({
+            message: 'New User Added Successfully',
+            userId: createdUser._id
+            });        
+    }).catch(err => console.log(err));    
+    }).catch(err => console.log(err));
+}
 
 exports.postAddProduct = (req, res, next) => {
     const productName = (req.body.name);
@@ -81,6 +109,16 @@ exports.postAddAttribute = (req, res, next) => {
     }).catch(err => console.log(err));
 }
 
+exports.getAllUsers = (req, res, next) => {
+    User.find()
+    .then(users => {
+        res.status(200).json({
+            message: 'Users fetch Successfully',
+            users: users
+        });        
+    });
+}
+
 exports.getAllProducts = (req, res, next) => {
     Product.find()
     .populate('categoryId')
@@ -110,6 +148,14 @@ exports.getAllAttributes = (req, res, next) => {
             message: 'Attributes fetch Successfully',
             attributes: attributes
         });
+    });    
+}
+
+exports.deleteUser = (req, res, next) => {
+    const userId = req.params.id;
+    User.deleteOne({ _id: userId })
+    .then(() => {        
+        res.status(200).json({message: 'User Deleted!'});        
     });    
 }
 
