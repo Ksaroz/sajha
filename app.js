@@ -27,6 +27,7 @@ app.set('view engine', 'ejs');
 const adminRouter = require('./routes/admin');
 const productsRouter = require('./routes/shop');
 const userRouter = require('./routes/user');
+// const categoryRouter = require('./routes/category');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -72,6 +73,7 @@ app.use(cors());
 app.use('/admin', adminRouter);
 app.use('/', productsRouter);
 app.use('/api/user', userRouter);
+// app.use('/api/category', categoryRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

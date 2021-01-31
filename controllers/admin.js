@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+//const Slugify = require('slugify');
 const User = require('../models/user');
 const Product = require('../models/product');
 const Category = require('../models/category');
@@ -6,14 +7,26 @@ const Attribute = require('../models/attribute');
 const Order = require('../models/order');
 //const { populate } = require('../models/product');
 
-// exports.getAddProduct = (req, res, next) => {
-//     if (!req.session.isLoggedIn) {
-//         return res.redirect('/login');
-//     }
-//     res.render('admin/addproducts', { 
-//         title: 'Add Product'        
-//     });
-// }
+function createCategory(categories, parentId = null) {
+    const categoryList = [];
+    let category;
+    if(parentId == null){
+        category = categories.filter(cat => cat.parentId == undefined);
+    }else {
+        category = categories.filter(cat => cat.parentId == parentId);
+    }
+
+    for(let cate of category){
+        categoryList.push({
+            _id: cate._id,
+            name: cate.name,
+            slug: cate.slug,
+            children: createCategory(categories, cate._id)
+        });
+    }
+
+    return categoryList;
+};
 
 exports.postAddUser = (req, res, next) => {
     const userFirstName = (req.body.firstname);
@@ -64,33 +77,46 @@ exports.postAddProduct = (req, res, next) => {
     });    
 }
 
-exports.postAddCategory = (req, res, next) => {
-    const categoryName = (req.body.categoryName);
-    //const subCategoryName = (req.body.subCategoryName);
+exports.postAddCategory = (req, res, next) => {    
+    // const catName = (req.body.name);
+ /** working code for add category */   
+    // const category = new Category({
+    //     name: req.body.name
+    // });
+    // console.log(category);
+    // category.save().then(createdCategory => {
+    //     console.log(createdCategory);
+    //     res.status(201).json({
+    //         message: 'Category Added Successfully',
+    //         catId: createdCategory._id
+    //     });
+    // });
+/*** end of working code for add category */
 
-    const category = new Category({
-        categoryName: categoryName,
-        //subCategoryName: subCategoryName
-    });
-    category.save((error, category) => {
+    const categoryObj = {
+        name: req.body.name,
+        slug: req.body.slug,
+        parentId: req.body.parentId
+    }
+
+    if(req.body.parentId) {
+        categoryObj.parentId = req.body.parentId;
+    }
+
+    const cat = new Category(categoryObj);
+    cat.save((error, category) => {
         if(error) {
-            return res.status(400).json({ error, message: "Sorry! you cannot repeat the same category name!" });
-        } 
-            
+           return res.status(400).json({ error, message: "Sorry! you cannot repeat the same category name!" }); 
+        }
+
         if(category) {
             return res.status(201).json({ 
                 categories: category,
-                catId: category._id,                
-                message: "Category Added Successfully!"});
-         }
-    //.then(savedCategory => {
-    //     res.status(201).json({
-    //         categories: savedCategory,
-    //         message: 'Category Added Successfully',
-    //         catId: savedCategory._id
-    //     });
-    // }).catch(err => console.log(err));
-});
+                catId: category._id,                                
+                message: "Category Added Successfully!"
+        });
+        }
+    });
 }
 
 exports.postAddAttribute = (req, res, next) => {
@@ -132,13 +158,21 @@ exports.getAllProducts = (req, res, next) => {
 }
 
 exports.getAllCategories = (req, res, next) => {
-    Category.find()
-    .then(categories => {        
-        res.status(200).json({
-            message: 'Categories fetch Successfully',
-            categories: categories
-        });
-    });    
+    Category.find({})
+    .exec((error, categories) => {
+        if(error) return res.status(400).json({ error });
+        if(categories) {
+
+            const categoryList = createCategory(categories);
+
+            res.status(200).json({
+                message: 'Categories fetch Successfully',
+                categories: categoryList
+            });
+        }
+    });
+    // .then(categories => {        
+    // });    
 }
 
 exports.getAllAttributes = (req, res, next) => {
@@ -239,8 +273,8 @@ exports.putEditProducts = (req, res, next) => {
 exports.putEditCategories = (req, res, next) => {
     const category = new Category({
         _id: req.params.id,
-        categoryName: req.body.categoryName,
-        subCategoryName: req.body.subCategoryName,                
+        name: req.body.name,
+        // subCategoryName: req.body.subCategoryName,                
     });
     Category.updateOne({_id: req.params.id}, category)
     .then(result => {        
