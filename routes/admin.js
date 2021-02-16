@@ -11,13 +11,13 @@ const adminController = require('../controllers/admin');
 router.post('/add/user', checkAuth, adminController.postAddUser);
 
 /* POST addProducts */
-router.post('/add', checkAuth, adminController.postAddProduct);
+router.post('/add', adminController.postAddProduct);
 
 /* POST addCategory */
 router.post('/add/category', checkAuth, adminController.postAddCategory);
 
 /* POST addAttribute */
-router.post('/add/attribute', checkAuth, adminController.postAddAttribute);
+router.post('/add/attribute', adminController.postAddAttribute);
 
 /* GET Allusers for admin */
 router.get('/users', adminController.getAllUsers);
