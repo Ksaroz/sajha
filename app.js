@@ -12,7 +12,9 @@ const checkAuth = require('./middleware/auth');
 //const flash = require('connect-flash');
 //const User =  require('./models/user');
 
-const MONGODB_URI = 'mongodb+srv://ksaroz1992:mongodb7029@cluster0-13s3r.mongodb.net/sajha?retryWrites=true&w=majority';
+//const MONGODB_URI = 'mongodb+srv://ksaroz1992:mongodb7029@cluster0-13s3r.mongodb.net/sajha?retryWrites=true&w=majority';
+//const MONGODB_URI = 'mongodb+srv://Kshresthasan:166ssb7029@cluster0.ikbtv.mongodb.net/Sajhakart?retryWrites=true&w=majority';
+const MONGODB_URI = 'mongodb://localhost:27017/sajhakart';
 
 var app = express();
 // const store = new MongoDBStore({
@@ -31,9 +33,10 @@ const userRouter = require('./routes/user');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use("/images", express.static(__dirname + 'public/images'));
 app.use(cors());
 // app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js')); // redirect bootstrap JS
 // app.use('/js', express.static(__dirname + '/node_modules/jquery/dist')); // redirect JS jQuery

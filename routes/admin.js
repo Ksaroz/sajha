@@ -1,8 +1,34 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const path = require('path');
+const multer = require('multer');
+const shortid = require('shortid');
 const checkAuth = require('../middleware/auth');
-
 const adminController = require('../controllers/admin');
+
+const MIME_TYPE_MAP = {
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+  'image/jpg': 'jpg'
+};
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      const isValid = MIME_TYPE_MAP[file.mimetype];
+      let error = new Error("Invalid Mime Type");
+      if(isValid) {
+        error = null;
+      }
+      cb(null, 'public/images');
+    },
+    filename: function (req, file, cb) {
+      const name = file.originalname.toLowerCase().split(' ').join('-');
+      const ext = MIME_TYPE_MAP[file.mimetype];
+      cb(null, name + '-' + shortid.generate() + '-' + Date.now() + '.' + ext);
+    }
+})
+
+const upload = multer({ storage });
 
 /* GET addProducts page */
 //router.get('/add', adminController.getAddProduct);
@@ -11,10 +37,10 @@ const adminController = require('../controllers/admin');
 router.post('/add/user', checkAuth, adminController.postAddUser);
 
 /* POST addProducts */
-router.post('/add', adminController.postAddProduct);
+router.post('/add/product', upload.array('image'), adminController.postAddProduct); 
 
 /* POST addCategory */
-router.post('/add/category', checkAuth, adminController.postAddCategory);
+router.post('/add/category', adminController.postAddCategory);
 
 /* POST addAttribute */
 router.post('/add/attribute', adminController.postAddAttribute);
@@ -32,10 +58,13 @@ router.get('/add/category', adminController.getAllCategories);
 router.get('/add/attribute', adminController.getAllAttributes);
 
 /* GET Edit Products for admin */
-router.get('/product/update/:id', adminController.getEditProducts);
+router.get('/api/product/:id', adminController.getProduct);
+
+/* GET Edit Products for admin */
+router.get('/product/update/:id', adminController.getProduct);
 
 /* PUT Edit Products for admin */
-router.put('/product/update/:id', checkAuth, adminController.putEditProducts);
+router.put('/product/update/:id', checkAuth, upload.single('image'), adminController.putEditProducts);
 
 /* GET Edit Categories for admin */
 router.get('/add/category/update/:id', adminController.getEditCategories);

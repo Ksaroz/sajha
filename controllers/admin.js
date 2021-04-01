@@ -1,11 +1,11 @@
 const bcrypt = require('bcryptjs');
-//const Slugify = require('slugify');
+const shortid = require('shortid');
 const User = require('../models/user');
 const Product = require('../models/product');
 const Category = require('../models/category');
 const Attribute = require('../models/attribute');
 const Order = require('../models/order');
-const { populate } = require('../models/user');
+//const { populate } = require('../models/user');
 //const { populate } = require('../models/product');
 
 function createCategory(categories, parentId = null) {
@@ -77,21 +77,80 @@ exports.postAddUser = (req, res, next) => {
 }
 
 exports.postAddProduct = (req, res, next) => {
+    //console.log(req.file);
+    //console.log(req.user);
+
     
-    const product = new Product({
-        name: req.body.name,
-        imageUrl: req.body.imageUrl,        
-        description: req.body.description,
-        price: req.body.price,
-        categoryId: req.body.categoryId               
+
+    const { name, price, quantity, description, category, offers, attributes, variations, spec } = req.body;
+
+    let productPictures = [];
+    //let variations = [];
+       
+
+    if(req.files.length > 0) {
+        productPictures = req.files.map(file => {
+            return { img: file.filename }
+        });
+    } 
+    
+    //console.log(variations.length);
+
+    // if(req.body.variations.length > 0) {
+    //     for(let i=0;i< req.body.variations.length; i++) {
+    //         console.log(req.body.variations[i]);
+    //         req.body.variations = req.body.variations[i];
+    //     }
+    // }
+
+
+   
+
+
+
+    // const imagePath = req.files.map(file => {
+    //     for(i = 0; i <= file.length; i++) {
+    //         return { img: file[i].filename }
+    //     }
+    // });
+    // console.log(imagePath);
+
+    const url = req.protocol + '://' + req.get('host');
+    
+    const products = new Product({
+        name: name,
+        price,
+        quantity,                
+        description,           
+        //imagePath: url + /images/ + req.file.filename,
+        productPictures,
+        category,
+        offers,
+        attributes,
+        variations,
+        spec
+        //createdBy: req.user._id
     });
-    console.log(product);
-    product.save().then(createdProduct => {
-        res.status(201).json({
-            message: 'Product Added Successfully',
-            prodId: createdProduct._id
-            });        
-    });    
+    //console.log(products);
+    products.save(((error, products) => {
+        if(error) return res.status(400).json({error});
+        if(products) {
+            //console.log(products);
+            res.status(201).json({
+                message: "Product Added Successfully",
+                products: products,
+                // prodId: products._id,
+                // prodImg: products.imagePath
+            });
+        }
+    }));
+    // product.save().then(createdProduct => {
+    //     res.status(201).json({
+    //         message: 'Product Added Successfully',
+    //         prodId: createdProduct._id
+    //         });        
+    // });    
+    
 }
 
 exports.postAddCategory = (req, res, next) => {    
@@ -159,24 +218,36 @@ exports.getAllUsers = (req, res, next) => {
 }
 
 exports.getAllProducts = (req, res, next) => {
-    const categoryId = (ch => {
-        return ch.children._id;
-    })
-    Product.find({})
-    .populate('categoryId')
-    .exec((error, products) => {
-        console.log(products);        
-        if(error) return res.status(400).json({ error });
-        if(products) {
-            res.status(200).json({
-                message: 'Products fetch Successfully',
-                products: products                
-                // prodCatName: products.categoryId.map(pc => {
-                //     return pc.name;
-                // })
-            });
-        }
+    Product.find()
+    .populate('category')
+    .populate('attributes')    
+    .then(products => { 
+        console.log(products);       
+        res.status(200).json({
+            message: "Product Fetch Successfully",
+            products: products,
+            catName: products.category
+        });
+        //console.log(catName);
     });
+    // const categoryId = (ch => {
+    //     return ch.children._id;
+    // })
+    // Product.find({})
+    // //.populate('category')
+    // .exec((error, products) => {
+    //     console.log(products);        
+    //     if(error) return res.status(400).json({ error });
+    //     if(products) {
+    //         res.status(200).json({
+    //             message: 'Products fetch Successfully',
+    //             products: products                
+    //             // prodCatName: products.categoryId.map(pc => {
+    //             //     return pc.name;
+    //             // })
+    //         });
+    //     }
+    // });
     // Product.find()
     // .populate('categoryId')
     // .then(products => {    
@@ -267,6 +338,18 @@ exports.getEditProducts = (req, res, next) => {
     })
 }
 
+exports.getProduct = (req, res, next) => {
+    const prodId = req.params.id;
+    Product.findById({_id: prodId}).then(product => {
+        console.log(product);
+        if(product) {
+            res.status(200).json(product);
+        } else {
+            res.status(404).json({message: 'Product not found!'});
+        }
+    })
+}
+
 /* backend get edit categories function */
 exports.getEditCategories = (req, res, next) => {
     Category.findById(req.params.id).then(category => {
@@ -293,13 +376,22 @@ exports.getEditAttributes = (req, res, next) => {
 
 /* backend post edit products function */
 exports.putEditProducts = (req, res, next) => {
+    console.log(req.file);
+    let imagePath = req.body.imagePath;
+    if(req.file) {
+        const url = req.protocol + '://' + req.get('host');
+        imagePath = url + '/images/' + req.file.filename  
+    }
     const product = new Product({
         _id: req.params.id,
         name: req.body.name,
-        imageUrl: req.body.image,        
+        price: req.body.price,
+        quantity: req.body.quantity, 
         description: req.body.description,
-        price: req.body.price 
+        imagePath: imagePath,
+        category: req.body.category                
     });
+    console.log(product);
     Product.updateOne({_id: req.params.id}, product)
     .then(result => {        
         res.status(200).json({message: 'Update Successful!'});
