@@ -11,29 +11,54 @@ const productSchema = new Schema({
         type: String,
         unique: true,        
         index: true        
-    },
+    },    
     price: {
+        type: Number,
+        required: true
+    },
+    quantity: {
         type: Number,
         required: true
     },
     description: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
-    imageUrl: {
-        type: String,
-        required: true
+    offers: {
+        type: Number
     },
-    categoryId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Category',
-        required: true
-    }
-    // userId: {
-    //     type: Schema.Types.ObjectId,
+    //imagePath: { type: String},
+    productPictures: [
+        { img: String }
+    ],
+    reviews: [
+        {
+            userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },            
+            review: String
+        }
+    ],
+    category: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Category",
+            required: true            
+    },
+    attributes: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Attribute'        
+    },
+    variations: [
+        {
+            type: String
+        }
+    ],
+    spec: String
+    // createdBy: { 
+    //     type: Schema.Types.ObjectId,        
     //     ref: 'User'
-    // }
-});
+    // }  
+       
+}, { timestamps: true });
 
 function slugify(string) {
     const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;'
@@ -54,5 +79,6 @@ function slugify(string) {
     this.slug = slugify(this.name);
     next();
 });
+
 
 module.exports = mongoose.model('Product', productSchema);

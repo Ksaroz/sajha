@@ -17,6 +17,18 @@ exports.getAllProducts = (req, res, next) => {
     
 }
 
+exports.getProduct = (req, res, next) => {
+    const prodId = req.params.id;
+    Product.findById(prodId).then(product => {
+        console.log(product);
+        if(product) {
+            res.status(200).json(product);
+        } else {
+            res.status(404).json({message: 'Product not found!'});
+        }
+    })
+}
+
 exports.getProductDetails = (req, res, next) => {
     const productId = req.params.productId;
     Product.findById(productId)

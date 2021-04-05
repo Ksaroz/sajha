@@ -14,16 +14,7 @@ const categorySchema = new Schema({
     },
     parentId: {
         type: String
-    }
-    //   ancestors: [{
-    //        _id: {
-    //           type: mongoose.Schema.Types.ObjectId,
-    //           ref: "Category",
-    //           index: true
-    //   },
-    //        name: String,
-    //        slug: String
-    //   }]    
+    }    
 }, { timestamps: true });
 
 function slugify(string) {

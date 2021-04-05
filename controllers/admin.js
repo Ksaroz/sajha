@@ -1,10 +1,11 @@
 const bcrypt = require('bcryptjs');
-//const Slugify = require('slugify');
+const shortid = require('shortid');
 const User = require('../models/user');
 const Product = require('../models/product');
 const Category = require('../models/category');
 const Attribute = require('../models/attribute');
 const Order = require('../models/order');
+//const { populate } = require('../models/user');
 //const { populate } = require('../models/product');
 
 function createCategory(categories, parentId = null) {
@@ -26,6 +27,27 @@ function createCategory(categories, parentId = null) {
     }
 
     return categoryList;
+};
+
+function createAttribute(attributes, parentId = null) {
+    const attributeList = [];
+    let attribute;
+    if(parentId == null){
+        attribute = attributes.filter(att => att.parentId == undefined);
+    }else {
+        attribute = attributes.filter(att => att.parentId == parentId);
+    }
+
+    for(let att of attribute){
+        attributeList.push({
+            _id: att._id,
+            name: att.name,
+            slug: att.slug,
+            children: createAttribute(attributes, att._id)
+        });
+    }
+
+    return attributeList;
 };
 
 exports.postAddUser = (req, res, next) => {
@@ -55,44 +77,83 @@ exports.postAddUser = (req, res, next) => {
 }
 
 exports.postAddProduct = (req, res, next) => {
-    const productName = (req.body.name);
-    const productImageUrl = (req.body.image); 
-    const productDescription = (req.body.description);
-    const productPrice = (req.body.price);
-    const productCategory = (req.body.category)
+    //console.log(req.file);
+    //console.log(req.user);
 
-    const product = new Product({
-        name: productName,
-        imageUrl: productImageUrl,        
-        description: productDescription,
-        price: productPrice,
-        categoryId: productCategory
+    
+
+    const { name, price, quantity, description, category, offers, attributes, variations, spec } = req.body;
+
+    let productPictures = [];
+    //let variations = [];
+       
+
+    if(req.files.length > 0) {
+        productPictures = req.files.map(file => {
+            return { img: file.filename }
+        });
+    } 
+    
+    //console.log(variations.length);
+
+    // if(req.body.variations.length > 0) {
+    //     for(let i=0;i< req.body.variations.length; i++) {
+    //         console.log(req.body.variations[i]);
+    //         req.body.variations = req.body.variations[i];
+    //     }
+    // }
+
+
+   
+
+
+
+    // const imagePath = req.files.map(file => {
+    //     for(i = 0; i <= file.length; i++) {
+    //         return { img: file[i].filename }
+    //     }
+    // });
+    // console.log(imagePath);
+
+    const url = req.protocol + '://' + req.get('host');
+    
+    const products = new Product({
+        name: name,
+        price,
+        quantity,                
+        description,           
+        //imagePath: url + /images/ + req.file.filename,
+        productPictures,
+        category,
+        offers,
+        attributes,
+        variations,
+        spec
+        //createdBy: req.user._id
     });
-    console.log(product);
-    product.save().then(createdProduct => {
-        res.status(201).json({
-            message: 'Product Added Successfully',
-            prodId: createdProduct._id
-            });        
-    });    
+    //console.log(products);
+    products.save(((error, products) => {
+        if(error) return res.status(400).json({error});
+        if(products) {
+            //console.log(products);
+            res.status(201).json({
+                message: "Product Added Successfully",
+                products: products,
+                // prodId: products._id,
+                // prodImg: products.imagePath
+            });
+        }
+    }));
+    // product.save().then(createdProduct => {
+    //     res.status(201).json({
+    //         message: 'Product Added Successfully',
+    //         prodId: createdProduct._id
+    //         });        
+    // });    
+    
 }
 
 exports.postAddCategory = (req, res, next) => {    
-    // const catName = (req.body.name);
- /** working code for add category */   
-    // const category = new Category({
-    //     name: req.body.name
-    // });
-    // console.log(category);
-    // category.save().then(createdCategory => {
-    //     console.log(createdCategory);
-    //     res.status(201).json({
-    //         message: 'Category Added Successfully',
-    //         catId: createdCategory._id
-    //     });
-    // });
-/*** end of working code for add category */
-
     const categoryObj = {
         name: req.body.name,
         slug: req.body.slug,
@@ -120,19 +181,30 @@ exports.postAddCategory = (req, res, next) => {
 }
 
 exports.postAddAttribute = (req, res, next) => {
-    const attributeName = (req.body.attributeName);
-    const variationName = (req.body.variationName);
+    const attribObj = {
+        name: req.body.name,
+        slug: req.body.slug,
+        parentId: req.body.parentId
+    }
 
-    const attribute = new Attribute ({
-        attributeName: attributeName,
-        variationName: variationName
-    });
-    attribute.save().then(savedAttribute => {
-        res.status(201).json({
-            message: 'Category Added Successfully',
-            attId: savedAttribute._id
+    if(req.body.parentId) {
+        attribObj.parentId = req.body.parentId;
+    }
+
+    const att = new Attribute(attribObj);
+    att.save((error, attribute) => {
+        if(error) {
+           return res.status(400).json({ error, message: "Sorry! you cannot repeat the same category name!" }); 
+        }
+
+        if(attribute) {
+            return res.status(201).json({ 
+                attributes: attribute,
+                attId: attribute._id,                                
+                message: "Attribute Added Successfully!"
         });
-    }).catch(err => console.log(err));
+        }
+    });  
 }
 
 exports.getAllUsers = (req, res, next) => {
@@ -147,14 +219,45 @@ exports.getAllUsers = (req, res, next) => {
 
 exports.getAllProducts = (req, res, next) => {
     Product.find()
-    .populate('categoryId')
-    .then(products => {    
-        //console.log(products);    
+    .populate('category')
+    .populate('attributes')    
+    .then(products => { 
+        console.log(products);       
         res.status(200).json({
-            message: 'Product fetch Successfully',
-            products: products
+            message: "Product Fetch Successfully",
+            products: products,
+            catName: products.category
         });
-    });    
+        //console.log(catName);
+    });
+    // const categoryId = (ch => {
+    //     return ch.children._id;
+    // })
+    // Product.find({})
+    // //.populate('category')
+    // .exec((error, products) => {
+    //     console.log(products);        
+    //     if(error) return res.status(400).json({ error });
+    //     if(products) {
+    //         res.status(200).json({
+    //             message: 'Products fetch Successfully',
+    //             products: products                
+    //             // prodCatName: products.categoryId.map(pc => {
+    //             //     return pc.name;
+    //             // })
+    //         });
+    //     }
+    // });
+    // Product.find()
+    // .populate('categoryId')
+    // .then(products => {    
+    //     console.log(products);    
+    //     res.status(200).json({
+    //         message: 'Product fetch Successfully',
+    //         products: products,
+    //         prodCatName: products.categoryId.name
+    //     });
+    // });    
 }
 
 exports.getAllCategories = (req, res, next) => {
@@ -176,13 +279,19 @@ exports.getAllCategories = (req, res, next) => {
 }
 
 exports.getAllAttributes = (req, res, next) => {
-    Attribute.find()
-    .then(attributes => {        
-        res.status(200).json({
-            message: 'Attributes fetch Successfully',
-            attributes: attributes
-        });
-    });    
+    Attribute.find({})
+    .exec((error, attributes) => {
+        if(error) return res.status(400).json({ error });
+        if(attributes) {
+
+            const attributeList = createAttribute(attributes);
+
+            res.status(200).json({
+                message: 'Attributes fetch Successfully',
+                attributes: attributeList
+            });
+        }
+    });
 }
 
 exports.deleteUser = (req, res, next) => {
@@ -229,6 +338,18 @@ exports.getEditProducts = (req, res, next) => {
     })
 }
 
+exports.getProduct = (req, res, next) => {
+    const prodId = req.params.id;
+    Product.findById({_id: prodId}).then(product => {
+        console.log(product);
+        if(product) {
+            res.status(200).json(product);
+        } else {
+            res.status(404).json({message: 'Product not found!'});
+        }
+    })
+}
+
 /* backend get edit categories function */
 exports.getEditCategories = (req, res, next) => {
     Category.findById(req.params.id).then(category => {
@@ -255,13 +376,22 @@ exports.getEditAttributes = (req, res, next) => {
 
 /* backend post edit products function */
 exports.putEditProducts = (req, res, next) => {
+    console.log(req.file);
+    let imagePath = req.body.imagePath;
+    if(req.file) {
+        const url = req.protocol + '://' + req.get('host');
+        imagePath = url + '/images/' + req.file.filename  
+    }
     const product = new Product({
         _id: req.params.id,
         name: req.body.name,
-        imageUrl: req.body.image,        
+        price: req.body.price,
+        quantity: req.body.quantity, 
         description: req.body.description,
-        price: req.body.price 
+        imagePath: imagePath,
+        category: req.body.category                
     });
+    console.log(product);
     Product.updateOne({_id: req.params.id}, product)
     .then(result => {        
         res.status(200).json({message: 'Update Successful!'});

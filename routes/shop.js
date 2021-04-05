@@ -10,7 +10,7 @@ router.get('/', productsController.getProductIndex );
 //router.get('/products', productsController.getAllProducts);
 
 /* GET product-details page */
-//router.get('/details/:productId', productsController.getProductDetails);
+router.get('/product/details/:id', productsController.getProduct);
 
 /* GET Cart page */
 //router.get('/cart', productsController.getProductCart);
