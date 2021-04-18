@@ -66,7 +66,7 @@ exports.postAddUser = (req, res, next) => {
             password: hashed,
             role: userRole         
         });    
-        console.log(user);
+        //console.log(user);
     user.save().then(createdUser => {
         res.status(201).json({
             message: 'New User Added Successfully',
@@ -78,7 +78,7 @@ exports.postAddUser = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
     //console.log(req.file);
-    //console.log(req.user);
+    console.log(req.user);
 
     
 
@@ -222,7 +222,7 @@ exports.getAllProducts = (req, res, next) => {
     .populate('category')
     .populate('attributes')    
     .then(products => { 
-        console.log(products);       
+        //console.log(products);       
         res.status(200).json({
             message: "Product Fetch Successfully",
             products: products,

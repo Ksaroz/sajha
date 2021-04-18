@@ -1,28 +1,29 @@
 const createError = require('http-errors');
 const express = require('express');
-const cors = require('cors');
+const cors = require('cors'); 
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 const checkAuth = require('./middleware/auth');
-//const session = require('express-session');
-//const MongoDBStore = require('connect-mongodb-session')(session);
+const User =  require('./models/user');
+const session = require('express-session');
+const passport = require('passport');
+const MongoDBStore = require('connect-mongodb-session')(session);
 //const csrf = require('csurf');
 //const flash = require('connect-flash');
-//const User =  require('./models/user');
 
 //const MONGODB_URI = 'mongodb+srv://ksaroz1992:mongodb7029@cluster0-13s3r.mongodb.net/sajha?retryWrites=true&w=majority';
 //const MONGODB_URI = 'mongodb+srv://Kshresthasan:166ssb7029@cluster0.ikbtv.mongodb.net/Sajhakart?retryWrites=true&w=majority';
 const MONGODB_URI = 'mongodb://localhost:27017/sajhakart';
 
 var app = express();
-// const store = new MongoDBStore({
-//   uri: MONGODB_URI,
-//   collection: 'sessions' 
-// });
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: 'sessions' 
+});
 //const csrfProtection = csrf();
-// view engine setup
+//view engine setup;
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -37,29 +38,47 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use("/images", express.static(__dirname + 'public/images'));
-app.use(cors());
+app.use(cors({
+  origin:['http://localhost:4200', 'http://127.0.0.1:4200'],
+  credentials: true
+}));
 // app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js')); // redirect bootstrap JS
 // app.use('/js', express.static(__dirname + '/node_modules/jquery/dist')); // redirect JS jQuery
 // app.use('/js', express.static(__dirname + '/node_modules/owl.carousel/dist')); // redirect JS OwlCarousel
 // app.use('/js', express.static(__dirname + '/node_modules/jquery-mousewheel')); // jquery mousewheel
 // app.use('/css', express.static(__dirname + '/node_modules/owl.carousel/dist/assets')); // redirect OwlCarousel Css
 // app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')); // redirect CSS bootstrap
-// app.use(
-//   session({ 
-//     secret: 'my secret',
-//     resave: false,
-//     saveUninitialized: false,
-//     store: store 
-//   })
-// );
+app.use(
+  session({
+    name: 'myname.sid',
+    secret: 'my_secret',
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+    cookie: {
+      maxAge: 36000000,
+      httpOnly: false,
+      secure: false
+    }
+  })
+  );
+require('./passport-config');
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use((req, res, next) => {
+  console.log(req.session);
+  console.log(req.user);
+  next();
+})
 // app.use(csrfProtection);
 // app.use(flash());
 
 // app.use((req, res, next) => {
-//   if (!req.session.user) {
-//     return next();
-//   }
-//   User.findById(req.session.user._id)
+//   // if (!req.session.user) {
+//   //   return next();
+//   // }
+//   User.findById(req.user._id)
 //   .then(user => {
 //     req.user = user;
 //     next();

@@ -1,5 +1,6 @@
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
 const User = require('../models/user');
 
 exports.postSignUp = (req, res, next) => {
@@ -22,40 +23,44 @@ exports.postSignUp = (req, res, next) => {
 
 exports.postLogin = (req, res, next) => {
     const email = req.body.email;
-    const password = req.body.password;        
+    //const password = req.body.password;        
     User.findOne({ email: email })
     .then(user => {        
         if (!user) {
             res.status(401).json({
-                message: "Authentication Failed"
+                message: "User doesn't exist"
             });
-        }
-        bcrypt
-        .compare(password, user.password)
-        .then(matchedPassword => {
+       }
+    
+    const token = jwt.sign({email: user.email, userId: user._id},
+        'secret_this_should_be_longer',
+        {expiresIn: "1h"});
+    const userRole = user.role;
 
-            if (!matchedPassword) {
-                res.status(401).json({
-                    message: "Authentication Failed"
-                });
-            }
-            const token = jwt.sign({email: user.email, userId: user._id},
-                'secret_this_should_be_longer',
-                {expiresIn: "1h"});
-            const userRole = user.role;
-            res.status(200).json({
+    passport.authenticate('local', function(err, user, info) {            
+        if (err) { return res.status(501).json(err); }
+        if (!user) { return res.status(501).json(info); }
+        req.logIn(user, function(err) {
+            if (err) { return res.status(501).json(err); }
+            return res.status(200).json({
+                message: 'User login successfully!',
                 token: token,
                 expiresIn: 3600,
-                userRole: userRole
-            });
-        })
-        .catch(err => {
-            res.status(401).json({
-                message: "Authentication Failed"
+                userRole: userRole,
+                user: user._id
             });
         });
+        })(req, res, next);
     })
-    .catch(err => { 
-        console.log(err);
+    .catch(err => {
+        res.status(401).json({
+            message: "Authentication Failed"
+        });
     });
+    
+// exports.getLogout = (req, res, next) => {
+//     req.logout();
+//     res.redirect('/');
+// };
+ 
 };

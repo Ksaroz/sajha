@@ -1,10 +1,12 @@
 var express = require('express');
 var router = express.Router();
 
+const checkAuth = require('../middleware/auth');
+
 const productsController = require('../controllers/shop');
 
 /* GET home page. */
-router.get('/', productsController.getProductIndex );
+router.get('/', isValidUser, productsController.getProductIndex );
 
 /* GET allproducts page. */
 //router.get('/products', productsController.getAllProducts);
@@ -13,10 +15,10 @@ router.get('/', productsController.getProductIndex );
 router.get('/product/details/:id', productsController.getProduct);
 
 /* GET Cart page */
-//router.get('/cart', productsController.getProductCart);
+router.get('/cart', productsController.getProductCart);
 
 /* POST add to Cart */
-//router.post('/cart', productsController.postProductCart);
+router.post('/api/cart', checkAuth, productsController.addItemToCart);
 
 /* POST Delete Cart Items */
 //router.post('/cart/delete', productsController.postCartDeleteProduct);
@@ -39,5 +41,11 @@ router.get('/product/details/:id', productsController.getProduct);
 /* GET About page */
 //router.get('/about', productsController.getAboutPage);
 
+function isValidUser(req, res, next) {
+    if(req.isAuthenticated()) { 
+    next();    
+} 
+    return res.status(401).json({ message: 'Unauthorized Request'});
+}
 
 module.exports = router;

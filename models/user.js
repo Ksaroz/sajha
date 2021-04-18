@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
+const bcrypt = require('bcryptjs');
 
 const Schema = mongoose.Schema;
 
@@ -29,12 +30,17 @@ const userSchema = new Schema({
     // cart: {
     //     items: [{
     //         productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true},
-    //         quantity: { type: Number, required: true}
+    //         quantity: { type: Number, default: 1},
+    //         price: { type: String }
     //     }]
     // }
 }, { timestamps: true });
 
 userSchema.plugin(uniqueValidator);
+
+userSchema.methods.isValid = function(hassedPassword) {
+    return bcrypt.compareSync(hassedPassword, this.password);
+}
 
 // userSchema.methods.addToCart = function (product) {
 //     const cartProductIndex = this.cart.items.findIndex(cp => {
