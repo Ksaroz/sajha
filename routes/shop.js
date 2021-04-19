@@ -21,7 +21,7 @@ router.get('/cart', productsController.getProductCart);
 router.post('/api/cart', checkAuth, productsController.addItemToCart);
 
 /* POST Delete Cart Items */
-//router.post('/cart/delete', productsController.postCartDeleteProduct);
+router.post('/cart/delete/:id', productsController.postCartDeleteProduct);
 
 /* POST Place Orders */
 //router.post('/orders', productsController.postOrder);
