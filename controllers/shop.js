@@ -1,6 +1,7 @@
 const Product = require('../models/product');
 const Order = require('../models/order');
 const Cart = require('../models/cart');
+const Wish = require('../models/wish');
 
 exports.addItemToCart = (req, res, next) => {
     console.log(req.user);
@@ -23,6 +24,32 @@ exports.addItemToCart = (req, res, next) => {
                 cid: cart._id,
                 qty: cart.cartItems.quantity,
                 prc: cart.cartItems.price
+             });
+        }
+    });    
+}
+
+exports.addItemToWishlist = (req, res, next) => {
+    console.log(req.user);
+    const wish = new Wish({ 
+        user: req.user,
+        wishItems: {
+          product: req.body.product,
+          quantity: req.body.quantity,
+          price: req.body.price  
+        }
+    });
+
+    wish.save((error, wish) => {
+        if(error) return res.status(400).json({ message: "something wrong", error });
+        if(wish) {            
+            return res.status(201).json({ 
+                message: 'Item added successfully into your Wishlist',
+                user: wish.user._id,
+                pId: wish.wishItems.product,
+                cid: wish._id,
+                qty: wish.wishItems.quantity,
+                prc: wish.wishItems.price
              });
         }
     });    
@@ -63,8 +90,8 @@ exports.getProduct = (req, res, next) => {
 }
 
 exports.getProductById = (req, res, next) => {
-    const productId = req.params.productId;
-    Product.findById(productId)
+    const prodId = req.params.productId;
+    Product.findById(prodId)
     .then(product => {
         res.render('products/details', { 
             title: 'product Details',
@@ -116,14 +143,90 @@ exports.postProductCart = (req, res, next) => {
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {
-    const productId = req.body.productId;
-    req.user
-        .removeFromCart(productId)
+    // const cartId = req.params.id;
+    // Cart.deleteOne({ _id: cartId })
+    // .then(() => {        
+    //     res.status(200).json({message: 'Cart Item has been Deleted!'});        
+    // });
+    console.log(req.user);
+    if(req.user) {
+        const cartId = req.params.cartId;
+        console.log(cartId);
+        Cart.findByIdAndRemove(cartId)
         .then(result => {
-            res.redirect('/cart');
+            //console.log('Order Canceled');
+            res.status(200).json({message: 'Cart Item has been Deleted!'});        
+            //res.redirect('/orders');
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            console.log(err);
+        });
+    } else {
+        res.status(400).json({message: 'Sorry user is unauthorized!'});
+    }
+
+    // const id = req.params.id;
+    // console.log(id);
+    // Cart.findByIdAndRemove(id)
+    //     .then(result => {
+    //         //console.log('Order Canceled');
+    //         return res.status()
+    //         res.redirect('/orders');
+    //     })
+    //     .catch(err => {
+    //         console.log(err);
+    //     });
+    // req.cart
+    //     .removeFromCart(id)
+    //     .then(result => {
+    //         res.redirect('/cart');
+    //     })
+    //     .catch(err => console.log(err));
 }
+
+exports.getProductWish = (req, res, next) => {    
+    Wish.find()
+    .populate('wishItems.product')        
+    .then(products => { 
+        console.log(products);       
+        res.status(200).json({
+            message: "Product Fetch from Wishlist Successfully",
+            products: products,
+            //catName: products.category
+        });
+        //console.log(catName);
+    });        
+}
+
+exports.deleteWishProduct = (req, res, next) => {
+    // const cartId = req.params.id;
+    // Cart.deleteOne({ _id: cartId })
+    // .then(() => {        
+    //     res.status(200).json({message: 'Cart Item has been Deleted!'});        
+    // });
+    console.log(req.user);
+    if(req.user) {
+        const wishId = req.params.wishId;
+        console.log(wishId);
+        Wish.findByIdAndRemove(wishId)
+        .then(result => {            
+            res.status(200).json({message: 'Wish Item has been Deleted!'});            
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    } else {
+        res.status(400).json({message: 'Sorry user is unauthorized!'});
+    }    
+}
+
+// exports.deleteWishProduct = (req, res, next) => {
+//     const wishId = req.params.id;
+//     Wish.deleteOne({ _id: wishId })
+//     .then(() => {        
+//         res.status(200).json({message: 'Wish Deleted!'});        
+//     });    
+// }
 
 exports.getMyOrders = (req, res, next) => {
     Order.find({ 'user.userId': req.user._id })

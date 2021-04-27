@@ -21,7 +21,16 @@ router.get('/cart', productsController.getProductCart);
 router.post('/api/cart', checkAuth, productsController.addItemToCart);
 
 /* POST Delete Cart Items */
-router.post('/cart/delete/:id', productsController.postCartDeleteProduct);
+router.delete('/api/cart/delete/:cartId', checkAuth, productsController.postCartDeleteProduct);
+
+/* GET Cart page */
+router.get('/wish', productsController.getProductWish);
+
+/* POST add to Cart */
+router.post('/api/wish', checkAuth, productsController.addItemToWishlist);
+
+/* POST Delete Cart Items */
+router.delete('/api/wish/delete/:wishId', checkAuth, productsController.deleteWishProduct);
 
 /* POST Place Orders */
 //router.post('/orders', productsController.postOrder);
