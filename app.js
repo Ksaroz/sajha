@@ -66,25 +66,25 @@ require('./passport-config');
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use((req, res, next) => {
-  console.log(req.session);
-  console.log(req.user);
-  next();
-})
+// app.use((req, res, next) => {
+//   console.log(req.session);
+//   console.log(req.user);
+//   next();
+// })
 // app.use(csrfProtection);
 // app.use(flash());
 
-// app.use((req, res, next) => {
-//   // if (!req.session.user) {
-//   //   return next();
-//   // }
-//   User.findById(req.user._id)
-//   .then(user => {
-//     req.user = user;
-//     next();
-//   })
-//   .catch(err => console.log(err));
-// });
+app.use((req, res, next) => {
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.user._id)
+  .then(user => {
+    req.user = user;
+    next();
+  })
+  .catch(err => console.log(err));
+});
 
 // app.use((req, res, next) => {
 //   res.locals.isAuthenticated = req.session.isLoggedIn;

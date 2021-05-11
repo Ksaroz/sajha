@@ -229,41 +229,42 @@ exports.deleteWishProduct = (req, res, next) => {
 // }
 
 exports.getMyOrders = (req, res, next) => {
-    Order.find({ 'user.userId': req.user._id })
-    .then(orders => {
-        res.render('products/order', {
-            title: 'My Orders',
-            path: '/orders',
-            orders: orders            
-        });
-    })
-    .catch(err => console.log(err));
+    Order.find()
+        .populate('cartId')
+        .populate('')        
+        .then(orders => { 
+            console.log(orders);       
+            res.status(200).json({
+                message: "Product Fetch from Order Successfully",
+                products: orders,
+                //catName: products.category
+            });
+            //console.log(catName);
+        });       
 };
 
 exports.postOrder = (req, res, next) => {
-    req.user
-    .populate('cart.items.productId')
-    .execPopulate()
-    .then(user => {
-        const products = user.cart.items.map(i => {
-            return { quantity: i.quantity, product: { ...i.productId._doc } };
-        });
-        const order = new Order({
-            user: {
-                email: req.user.email,
-                userId: req.user
-            },
-            products: products
+    console.log(req.user);
+    const order = new Order({        
+        user: req.user._id,
+        orderItems: {
+            cart: req.body.orderItems.cart,
+            product: req.body.orderItems.product
+        }
     });
-    order.save();
-    })
-    .then(result => {
-        return req.user.clearCart();        
-    })
-    .then(() => {
-        res.redirect('/cart');
-    })
-    .catch(err => console.log(err));
+    order.save((error, order) => {
+        if(error) return res.status(400).json({ message: "something wrong", error });
+        if(order) {
+            console.log(order);
+            return res.status(201).json({ 
+                message: 'Your order has been successfully placed',
+                oId: order._id,
+                user: order.user._id,
+                cId: order.orderItems.cart,
+                pId: order.orderItems.product
+             });
+        }
+    });    
 };
 
 exports.getOrderDetails = (req, res, next) => {

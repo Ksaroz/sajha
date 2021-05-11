@@ -33,10 +33,10 @@ router.post('/api/wish', checkAuth, productsController.addItemToWishlist);
 router.delete('/api/wish/delete/:wishId', checkAuth, productsController.deleteWishProduct);
 
 /* POST Place Orders */
-//router.post('/orders', productsController.postOrder);
+router.post('/api/orders', checkAuth, productsController.postOrder);
 
 /* GET Order page */
-//router.get('/orders', productsController.getMyOrders);
+router.get('/api/orders', productsController.getMyOrders);
 
 /* GET order-details page */
 //router.get('/orders/details/:orderId', productsController.getOrderDetails);
