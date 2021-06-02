@@ -27,24 +27,24 @@ const productSchema = new Schema({
     },
     offers: {
         type: Number
-    },
-    //imagePath: { type: String},
+    },    
     productPictures: [
         { img: String }
     ],
     reviews: [
         {
-            userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },            
+            userId: { type: Schema.Types.ObjectId, ref: 'User' },            
             review: String
         }
     ],
     category: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "Category",
-            required: true            
+            required: true,
+            index: true            
     },
     attributes: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Attribute'        
     },
     variations: [
@@ -52,11 +52,12 @@ const productSchema = new Schema({
             type: String
         }
     ],
-    spec: String
-    // createdBy: { 
-    //     type: Schema.Types.ObjectId,        
-    //     ref: 'User'
-    // }  
+    spec: String,
+    creator: { 
+        type: Schema.Types.ObjectId,        
+        ref: 'User',
+        required: true
+    }  
        
 }, { timestamps: true });
 

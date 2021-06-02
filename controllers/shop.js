@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Category = require('../models/category');
 const Order = require('../models/order');
 const Cart = require('../models/cart');
 const Wish = require('../models/wish');
@@ -12,7 +13,7 @@ exports.addItemToCart = (req, res, next) => {
           quantity: req.body.quantity,
           price: req.body.price  
         }
-    });
+    }); 
 
     cart.save((error, cart) => {
         if(error) return res.status(400).json({ message: "something wrong", error });
@@ -30,9 +31,9 @@ exports.addItemToCart = (req, res, next) => {
 }
 
 exports.addItemToWishlist = (req, res, next) => {
-    console.log(req.user);
+    console.log(req.userData.userId);
     const wish = new Wish({ 
-        user: req.user,
+        user: req.userData.userId,
         wishItems: {
           product: req.body.product,
           quantity: req.body.quantity,
@@ -65,7 +66,7 @@ exports.getProductIndex = (req, res, next) => {
     });
 }
 
-exports.getAllProducts = (req, res, next) => {
+exports.getAllProducts = (req, res, next) => {    
     Product.find()
     .then(products => {
         res.render('products/all-products', {
@@ -101,9 +102,21 @@ exports.getProductById = (req, res, next) => {
     });
 }
 
+exports.getProductByCatId = (req, res, next) => {
+    const catId = req.params.id;
+    console.log(catId);
+    const productList = Product.find({category: catId}, function(err, cat) {
+        if(err) { return res.status(400).json({ err }) }
+        if(cat) {
+            return res.status(200).json({cat})
+        }
+    })
+}
 
-exports.getProductCart = (req, res, next) => {    
-        Cart.find()
+
+exports.getProductCart = (req, res, next) => {
+        console.log(req.user)    
+        Cart.find({user: req.user})
         .populate('cartItems.product')        
         .then(products => { 
             console.log(products);       
@@ -128,26 +141,7 @@ exports.getProductCart = (req, res, next) => {
     // .catch(err => console.log(err));
 //}
 
-exports.postProductCart = (req, res, next) => { 
-
-        // const productId = req.body.productId;
-        // Product.findById(productId)
-        // .then(product => {
-        //     console.log(product);
-        //     return req.user.addToCart(product);
-        // })
-        // .then(result => {
-        //     console.log(result);
-        //     //res.redirect('/cart');
-        // });    
-};
-
-exports.postCartDeleteProduct = (req, res, next) => {
-    // const cartId = req.params.id;
-    // Cart.deleteOne({ _id: cartId })
-    // .then(() => {        
-    //     res.status(200).json({message: 'Cart Item has been Deleted!'});        
-    // });
+exports.postCartDeleteProduct = (req, res, next) => {    
     console.log(req.user);
     if(req.user) {
         const cartId = req.params.cartId;
@@ -184,17 +178,22 @@ exports.postCartDeleteProduct = (req, res, next) => {
     //     .catch(err => console.log(err));
 }
 
-exports.getProductWish = (req, res, next) => {    
-    Wish.find()
+exports.getWish = (req, res, next) => {
+    console.log('get wish');
+    console.log(req.userData.userId);
+}
+
+exports.getProductWish = (req, res, next) => { 
+    console.log('getting wish');
+    console.log(req.userData.userId);    
+    Wish.find()    
     .populate('wishItems.product')        
     .then(products => { 
         console.log(products);       
         res.status(200).json({
             message: "Product Fetch from Wishlist Successfully",
-            products: products,
-            //catName: products.category
-        });
-        //console.log(catName);
+            products: products            
+        });        
     });        
 }
 
@@ -229,9 +228,7 @@ exports.deleteWishProduct = (req, res, next) => {
 // }
 
 exports.getMyOrders = (req, res, next) => {
-    Order.find()
-        .populate('cartId')
-        .populate('')        
+    Order.find()                      
         .then(orders => { 
             console.log(orders);       
             res.status(200).json({
@@ -245,13 +242,15 @@ exports.getMyOrders = (req, res, next) => {
 
 exports.postOrder = (req, res, next) => {
     console.log(req.user);
-    const order = new Order({        
-        user: req.user._id,
+    const order = new Order({
+        user: req.user,
         orderItems: {
-            cart: req.body.orderItems.cart,
-            product: req.body.orderItems.product
+          cart: req.body.cart,
+          //product: req.body.product,
+          quantity: req.body.quantity            
         }
     });
+    console.log(order);    
     order.save((error, order) => {
         if(error) return res.status(400).json({ message: "something wrong", error });
         if(order) {
@@ -261,7 +260,8 @@ exports.postOrder = (req, res, next) => {
                 oId: order._id,
                 user: order.user._id,
                 cId: order.orderItems.cart,
-                pId: order.orderItems.product
+                //pId: order.orderItems.product,
+                oQty: order.orderItems.quantity
              });
         }
     });    

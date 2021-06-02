@@ -37,13 +37,13 @@ const upload = multer({ storage });
 router.post('/add/user', checkAuth, adminController.postAddUser);
 
 /* POST addProducts */
-router.post('/add/product', upload.array('image'), adminController.postAddProduct); 
+router.post('/add/product', checkAuth, upload.array('image'), adminController.postAddProduct); 
 
 /* POST addCategory */
-router.post('/add/category', adminController.postAddCategory);
+router.post('/add/category', checkAuth, adminController.postAddCategory);
 
 /* POST addAttribute */
-router.post('/add/attribute', adminController.postAddAttribute);
+router.post('/add/attribute', checkAuth, adminController.postAddAttribute);
 
 /* GET Allusers for admin */
 router.get('/users', adminController.getAllUsers);
@@ -64,7 +64,7 @@ router.get('/api/product/:id', adminController.getProduct);
 router.get('/product/update/:id', adminController.getProduct);
 
 /* PUT Edit Products for admin */
-router.put('/product/update/:id', checkAuth, upload.single('image'), adminController.putEditProducts);
+router.put('/product/update/:id', checkAuth, upload.array('image'), adminController.putEditProducts);
 
 /* GET Edit Categories for admin */
 router.get('/add/category/update/:id', adminController.getEditCategories);

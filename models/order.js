@@ -10,7 +10,8 @@ const orderSchema = new Schema({
     },
     orderItems: {
         cart: {type: Schema.Types.ObjectId, ref: 'Cart', required: true},
-        product: {type: Schema.Types.ObjectId, ref: 'Product', required: true}
+        // product: { type: Schema.Types.ObjectId, ref: 'Product'},
+        quantity: { type: Number, default: 1}        
     }    
 }, { timestamps: true });
 

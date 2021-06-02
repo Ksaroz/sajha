@@ -15,10 +15,11 @@ const attributeSchema = new Schema({
     parentId: {
         type: String        
     },    
-    // productId: {
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'Product'
-    // }
+    creator: { 
+        type: Schema.Types.ObjectId,        
+        ref: 'User',
+        required: true
+    }  
 }, { timestamps: true });
 
 function slugify(string) {

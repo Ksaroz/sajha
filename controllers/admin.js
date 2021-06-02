@@ -76,88 +76,52 @@ exports.postAddUser = (req, res, next) => {
     }).catch(err => console.log(err));
 }
 
-exports.postAddProduct = (req, res, next) => {
-    //console.log(req.file);
-    console.log(req.user);
+exports.postAddProduct = (req, res, next) => {        
 
-    
-
+    const creator = req.userData.userId;
+    console.log(creator);
     const { name, price, quantity, description, category, offers, attributes, variations, spec } = req.body;
-
-    let productPictures = [];
-    //let variations = [];
-       
-
+    let productPictures = []; 
     if(req.files.length > 0) {
         productPictures = req.files.map(file => {
             return { img: file.filename }
         });
-    } 
-    
-    //console.log(variations.length);
-
-    // if(req.body.variations.length > 0) {
-    //     for(let i=0;i< req.body.variations.length; i++) {
-    //         console.log(req.body.variations[i]);
-    //         req.body.variations = req.body.variations[i];
-    //     }
-    // }
-
-
-   
-
-
-
-    // const imagePath = req.files.map(file => {
-    //     for(i = 0; i <= file.length; i++) {
-    //         return { img: file[i].filename }
-    //     }
-    // });
-    // console.log(imagePath);
-
-    const url = req.protocol + '://' + req.get('host');
-    
+    }
+    const url = req.protocol + '://' + req.get('host');    
     const products = new Product({
         name: name,
         price,
         quantity,                
-        description,           
-        //imagePath: url + /images/ + req.file.filename,
+        description,                   
         productPictures,
         category,
         offers,
         attributes,
         variations,
-        spec
-        //createdBy: req.user._id
+        spec,
+        creator        
     });
-    //console.log(products);
+    console.log(products);
+    //console.log(req.userData)
+    //return res.status(200).json({});
     products.save(((error, products) => {
         if(error) return res.status(400).json({error});
         if(products) {
             //console.log(products);
             res.status(201).json({
                 message: "Product Added Successfully",
-                products: products,
-                // prodId: products._id,
-                // prodImg: products.imagePath
+                products: products                
             });
         }
-    }));
-    // product.save().then(createdProduct => {
-    //     res.status(201).json({
-    //         message: 'Product Added Successfully',
-    //         prodId: createdProduct._id
-    //         });        
-    // });    
-    
+    }));   
 }
 
 exports.postAddCategory = (req, res, next) => {    
     const categoryObj = {
         name: req.body.name,
         slug: req.body.slug,
-        parentId: req.body.parentId
+        parentId: req.body.parentId,
+        creator: req.userData.userId
     }
 
     if(req.body.parentId) {
@@ -184,7 +148,8 @@ exports.postAddAttribute = (req, res, next) => {
     const attribObj = {
         name: req.body.name,
         slug: req.body.slug,
-        parentId: req.body.parentId
+        parentId: req.body.parentId,
+        creator: req.userData.userId
     }
 
     if(req.body.parentId) {
@@ -220,7 +185,8 @@ exports.getAllUsers = (req, res, next) => {
 exports.getAllProducts = (req, res, next) => {
     Product.find()
     .populate('category')
-    .populate('attributes')    
+    .populate('attributes')
+    .populate('creator')    
     .then(products => { 
         //console.log(products);       
         res.status(200).json({
@@ -229,35 +195,7 @@ exports.getAllProducts = (req, res, next) => {
             catName: products.category
         });
         //console.log(catName);
-    });
-    // const categoryId = (ch => {
-    //     return ch.children._id;
-    // })
-    // Product.find({})
-    // //.populate('category')
-    // .exec((error, products) => {
-    //     console.log(products);        
-    //     if(error) return res.status(400).json({ error });
-    //     if(products) {
-    //         res.status(200).json({
-    //             message: 'Products fetch Successfully',
-    //             products: products                
-    //             // prodCatName: products.categoryId.map(pc => {
-    //             //     return pc.name;
-    //             // })
-    //         });
-    //     }
-    // });
-    // Product.find()
-    // .populate('categoryId')
-    // .then(products => {    
-    //     console.log(products);    
-    //     res.status(200).json({
-    //         message: 'Product fetch Successfully',
-    //         products: products,
-    //         prodCatName: products.categoryId.name
-    //     });
-    // });    
+    });    
 }
 
 exports.getAllCategories = (req, res, next) => {
@@ -304,27 +242,40 @@ exports.deleteUser = (req, res, next) => {
 
 exports.deleteProduct = (req, res, next) => {
     const productId = req.params.id;
-    Product.deleteOne({ _id: productId })
-    .then(() => {        
-        res.status(200).json({message: 'Product Deleted!'});        
+    Product.deleteOne({ _id: productId, creator: req.userData.userId })
+    .then((result) => { 
+        console.log(result);
+        if(result.n > 0) {
+            res.status(200).json({message: 'Product Deleted!'});
+        } else {
+            res.status(401).json({message: 'Unauthorized'});
+        }
     });    
 }
 
 exports.deleteCategory = (req, res, next) => {
     const categoryId = req.params.id;
-    Category.deleteOne({ _id: categoryId })
-    .then(() => {
-        console.log('Category Deleted');
-        res.status(200).json({message: 'Category Deleted!'});        
+    Category.deleteOne({ _id: categoryId, creator: req.userData.userId })
+    .then((result) => {
+        console.log(result);
+        if(result.n > 0) {            
+            res.status(200).json({message: 'Category Deleted!'});        
+        } else {
+            res.status(401).json({message: 'Unauthorized'});
+        }        
     });    
 }
 
 exports.deleteAttribute = (req, res, next) => {
     const attributeId = req.params.id;
-    Attribute.deleteOne({ _id: attributeId })
-    .then(() => {
-        console.log('Attribute Deleted');
-        res.status(200).json({message: 'Attribute Deleted!'});        
+    Attribute.deleteOne({ _id: attributeId, creator: req.userData.userId })
+    .then((result) => {
+        console.log(result);
+        if(result.n > 0) {                        
+            res.status(200).json({message: 'Attribute Deleted!'});        
+        } else {
+            res.status(401).json({message: 'Unauthorized'});
+        }  
     });    
 }
 
@@ -349,6 +300,8 @@ exports.getProduct = (req, res, next) => {
         }
     })
 }
+
+
 
 /* backend get edit categories function */
 exports.getEditCategories = (req, res, next) => {
@@ -376,24 +329,35 @@ exports.getEditAttributes = (req, res, next) => {
 
 /* backend post edit products function */
 exports.putEditProducts = (req, res, next) => {
+    const creator = req.userData.userId;
+    console.log(creator);
     console.log(req.file);
-    let imagePath = req.body.imagePath;
-    if(req.file) {
-        const url = req.protocol + '://' + req.get('host');
-        imagePath = url + '/images/' + req.file.filename  
+    const { name, price, quantity, description, category, offers, attributes, variations, spec } = req.body;
+    console.log(req.files.length);
+    let productPictures = []; 
+    if(req.files.length > 0) {
+        productPictures = req.files.map(file => {
+            return { img: file.filename }
+        });
     }
-    const product = new Product({
-        _id: req.params.id,
-        name: req.body.name,
-        price: req.body.price,
-        quantity: req.body.quantity, 
-        description: req.body.description,
-        imagePath: imagePath,
-        category: req.body.category                
+    //const url = req.protocol + '://' + req.get('host');    
+    const products = new Product({
+        name,
+        price,
+        quantity,                
+        description,                   
+        productPictures,
+        category,
+        offers,
+        attributes,
+        variations,
+        spec,
+        creator       
     });
-    console.log(product);
-    Product.updateOne({_id: req.params.id}, product)
-    .then(result => {        
+    console.log(products);
+    Product.updateOne({_id: req.params.id}, products)
+    .then(result => {
+        console.log(result);
         res.status(200).json({message: 'Update Successful!'});
     });    
 } 
@@ -406,9 +370,14 @@ exports.putEditCategories = (req, res, next) => {
         name: req.body.name,
         // subCategoryName: req.body.subCategoryName,                
     });
-    Category.updateOne({_id: req.params.id}, category)
-    .then(result => {        
-        res.status(200).json({message: 'Update Successful!'});
+    Category.updateOne({_id: req.params.id, creator: req.userData.userId}, category)
+    .then(result => {
+        console.log(result);
+        if(result.n > 0) {                        
+            res.status(200).json({message: 'Update Successful!'});
+        } else {
+            res.status(401).json({message: 'Unauthorized'});
+        }     
     });    
 } 
 /* End of function */
@@ -419,9 +388,14 @@ exports.putEditAttributes = (req, res, next) => {
         attributeName: req.body.attributeName,
         variationName: req.body.variationName,                
     });
-    Attribute.updateOne({_id: req.params.id}, attribute)
-    .then(result => {        
-        res.status(200).json({message: 'Update Successful!'});
+    Attribute.updateOne({_id: req.params.id, creator: req.userData.userId}, attribute)
+    .then(result => {  
+        console.log(result);
+        if(result.n > 0) {                                    
+            res.status(200).json({message: 'Update Successful!'});
+        } else {
+            res.status(401).json({message: 'Unauthorized'});
+        }  
     });    
 } 
 /* End of function */

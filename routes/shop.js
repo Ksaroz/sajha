@@ -6,7 +6,7 @@ const checkAuth = require('../middleware/auth');
 const productsController = require('../controllers/shop');
 
 /* GET home page. */
-router.get('/', isValidUser, productsController.getProductIndex );
+router.get('/', productsController.getProductIndex );
 
 /* GET allproducts page. */
 //router.get('/products', productsController.getAllProducts);
@@ -14,8 +14,11 @@ router.get('/', isValidUser, productsController.getProductIndex );
 /* GET product-details page */
 router.get('/product/details/:id', productsController.getProduct);
 
+/* GET product-by-category page */
+router.get('/api/products/category/:id', productsController.getProductByCatId);
+
 /* GET Cart page */
-router.get('/cart', productsController.getProductCart);
+router.get('/api/cart', productsController.getProductCart);
 
 /* POST add to Cart */
 router.post('/api/cart', checkAuth, productsController.addItemToCart);
@@ -24,7 +27,7 @@ router.post('/api/cart', checkAuth, productsController.addItemToCart);
 router.delete('/api/cart/delete/:cartId', checkAuth, productsController.postCartDeleteProduct);
 
 /* GET Cart page */
-router.get('/wish', productsController.getProductWish);
+router.get('/api/wish', productsController.getProductWish);
 
 /* POST add to Cart */
 router.post('/api/wish', checkAuth, productsController.addItemToWishlist);

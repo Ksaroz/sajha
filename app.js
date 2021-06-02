@@ -5,7 +5,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
-const checkAuth = require('./middleware/auth');
+//const checkAuth = require('./middleware/auth');
 const User =  require('./models/user');
 const session = require('express-session');
 const passport = require('passport');
@@ -66,19 +66,25 @@ require('./passport-config');
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.use((req, res, next) => {
-//   console.log(req.session);
-//   console.log(req.user);
-//   next();
-// })
+app.use((req, res, next) => {
+  console.log(req.userData.userId);
+  next();
+})
+
+app.use((req, res, next) => {
+  console.log(req.session);
+  console.log(req.user);
+  next();
+})
 // app.use(csrfProtection);
 // app.use(flash());
 
 app.use((req, res, next) => {
+  console.log(req.session.user);  //getting user from session.
   if (!req.session.user) {
     return next();
   }
-  User.findById(req.user._id)
+  User.findById(req.session.user._id)
   .then(user => {
     req.user = user;
     next();
@@ -118,8 +124,8 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  //res.render('error');
+  //res.status(err.status || 500);
 });
 
 module.exports = app;
