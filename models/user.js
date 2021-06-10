@@ -27,13 +27,7 @@ const userSchema = new Schema({
         enum: ['user', 'admin'],
         default: 'user'
     }
-    // cart: {
-    //     items: [{
-    //         productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true},
-    //         quantity: { type: Number, default: 1},
-    //         price: { type: String }
-    //     }]
-    // }
+    
 }, { timestamps: true });
 
 userSchema.plugin(uniqueValidator);

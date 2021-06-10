@@ -5,6 +5,7 @@ const Product = require('../models/product');
 const Category = require('../models/category');
 const Attribute = require('../models/attribute');
 const Order = require('../models/order');
+const Wish = require('../models/wish');
 //const { populate } = require('../models/user');
 //const { populate } = require('../models/product');
 
@@ -199,6 +200,7 @@ exports.getAllProducts = (req, res, next) => {
 }
 
 exports.getAllCategories = (req, res, next) => {
+    //const userId = req.userData.userId;
     Category.find({})
     .exec((error, categories) => {
         if(error) return res.status(400).json({ error });
@@ -410,3 +412,4 @@ exports.getOrders = (req, res, next) => {
     })
     .catch(err => console.log(err));
 };
+

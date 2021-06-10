@@ -59,11 +59,7 @@ exports.addItemToWishlist = (req, res, next) => {
 exports.getProductIndex = (req, res, next) => {
     res.send('hello from express');
     console.log(req.session);
-    console.log(req.user);
-    return res.status(200).json({
-        user: req.user,
-        message: "Users access cart item"
-    });
+    console.log(req.user);    
 }
 
 exports.getAllProducts = (req, res, next) => {    
@@ -91,15 +87,18 @@ exports.getProduct = (req, res, next) => {
 }
 
 exports.getProductById = (req, res, next) => {
-    const prodId = req.params.productId;
+    const prodId = req.params.id;
     Product.findById(prodId)
+    .populate('category')
+    .populate('attributes')
     .then(product => {
-        res.render('products/details', { 
-            title: 'product Details',
-            product: product,
-            path: '/details'            
-        });
-    });
+        console.log(product);
+        if(product) {
+            return res.status(200).json(product);
+        } else {
+            return res.status(404).json({message: 'Product not found!'});
+        }
+    })
 }
 
 exports.getProductByCatId = (req, res, next) => {
@@ -115,31 +114,20 @@ exports.getProductByCatId = (req, res, next) => {
 
 
 exports.getProductCart = (req, res, next) => {
-        console.log(req.user)    
-        Cart.find({user: req.user})
-        .populate('cartItems.product')        
-        .then(products => { 
-            console.log(products);       
-            res.status(200).json({
-                message: "Product Fetch from Cart Successfully",
-                products: products,
-                //catName: products.category
-            });
-            //console.log(catName);
-        });        
-    }
-    // req.user
-    // .populate('cart.cartItems.product')
-    // .execPopulate()
-    // .then(user => {
-    //     const products = user.cart.items;
-    //     res.render('products/cart', { 
-    //         title: 'product Cart',
-    //         products: products            
-    //     });
-    // })
-    // .catch(err => console.log(err));
-//}
+    console.log(req.user)    
+    Cart.find()
+    .populate('cartItems.product')        
+    .then(products => { 
+        console.log(products);       
+        res.status(200).json({
+            message: "Product Fetch from Cart Successfully",
+            products: products,
+            //catName: products.category
+        });
+        //console.log(catName);
+    });        
+}
+    
 
 exports.postCartDeleteProduct = (req, res, next) => {    
     console.log(req.user);
@@ -157,42 +145,19 @@ exports.postCartDeleteProduct = (req, res, next) => {
         });
     } else {
         res.status(400).json({message: 'Sorry user is unauthorized!'});
-    }
-
-    // const id = req.params.id;
-    // console.log(id);
-    // Cart.findByIdAndRemove(id)
-    //     .then(result => {
-    //         //console.log('Order Canceled');
-    //         return res.status()
-    //         res.redirect('/orders');
-    //     })
-    //     .catch(err => {
-    //         console.log(err);
-    //     });
-    // req.cart
-    //     .removeFromCart(id)
-    //     .then(result => {
-    //         res.redirect('/cart');
-    //     })
-    //     .catch(err => console.log(err));
+    }    
 }
 
-exports.getWish = (req, res, next) => {
-    console.log('get wish');
-    console.log(req.userData.userId);
-}
-
-exports.getProductWish = (req, res, next) => { 
-    console.log('getting wish');
-    console.log(req.userData.userId);    
+exports.getProductWish = (req, res, next) => {
     Wish.find()    
     .populate('wishItems.product')        
-    .then(products => { 
-        console.log(products);       
+    .then(wishlists => {        
+        // console.log(req.userData.userId);
+        // console.log(req.user);
+        console.log(wishlists);       
         res.status(200).json({
             message: "Product Fetch from Wishlist Successfully",
-            products: products            
+            wishlists: wishlists            
         });        
     });        
 }

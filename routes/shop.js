@@ -12,7 +12,7 @@ router.get('/', productsController.getProductIndex );
 //router.get('/products', productsController.getAllProducts);
 
 /* GET product-details page */
-router.get('/product/details/:id', productsController.getProduct);
+router.get('/api/products/details/:id', productsController.getProductById);
 
 /* GET product-by-category page */
 router.get('/api/products/category/:id', productsController.getProductByCatId);
@@ -54,10 +54,8 @@ router.get('/api/orders', productsController.getMyOrders);
 //router.get('/about', productsController.getAboutPage);
 
 function isValidUser(req, res, next) {
-    if(req.isAuthenticated()) { 
-    next();    
-} 
-    return res.status(401).json({ message: 'Unauthorized Request'});
+    if(req.isAuthenticated()) next();     
+    else return res.status(401).json({ message: 'Unauthorized Request'});
 }
 
 module.exports = router;

@@ -5,7 +5,6 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
-//const checkAuth = require('./middleware/auth');
 const User =  require('./models/user');
 const session = require('express-session');
 const passport = require('passport');
@@ -22,6 +21,10 @@ const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: 'sessions' 
 });
+app.use(cors({
+  origin:['http://localhost:4200', 'http://127.0.0.1:4200'],
+  credentials: true
+}));
 //const csrfProtection = csrf();
 //view engine setup;
 app.set('views', path.join(__dirname, 'views'));
@@ -38,10 +41,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use("/images", express.static(__dirname + 'public/images'));
-app.use(cors({
-  origin:['http://localhost:4200', 'http://127.0.0.1:4200'],
-  credentials: true
-}));
 // app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js')); // redirect bootstrap JS
 // app.use('/js', express.static(__dirname + '/node_modules/jquery/dist')); // redirect JS jQuery
 // app.use('/js', express.static(__dirname + '/node_modules/owl.carousel/dist')); // redirect JS OwlCarousel
@@ -66,25 +65,25 @@ require('./passport-config');
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use((req, res, next) => {
-  console.log(req.userData.userId);
-  next();
-})
+// app.use((req, res, next) => {
+//   console.log(req.user);
+//   next();
+// })
 
-app.use((req, res, next) => {
-  console.log(req.session);
-  console.log(req.user);
-  next();
-})
+// app.use((req, res, next) => {
+//   console.log(req.session);
+//   console.log(req.user);
+//   next();
+// })
 // app.use(csrfProtection);
 // app.use(flash());
 
 app.use((req, res, next) => {
-  console.log(req.session.user);  //getting user from session.
-  if (!req.session.user) {
+  //console.log(req.user);  //getting user.
+  if (!req.user) {
     return next();
   }
-  User.findById(req.session.user._id)
+  User.findById(req.user)
   .then(user => {
     req.user = user;
     next();
@@ -124,8 +123,8 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  //res.render('error');
-  //res.status(err.status || 500);
+  res.render('error');
+  res.status(err.status || 500);
 });
 
 module.exports = app;
