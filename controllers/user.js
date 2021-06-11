@@ -5,13 +5,11 @@ const User = require('../models/user');
 // const passportHttp = require('passport-http');
 // const logout = require('express-passport-logout');
 
-exports.getLogout =  (req, res, next) => {
-    console.log(req.logout());    
-    //     req.session.destroy(function (err) {
-    //       res.redirect('/'); //Inside a callback… bulletproof!        
-    //   });
+exports.getLogout =  (req, res, next) => {    
     req.logout();
-    return res.redirect('/');
+    console.log("User Logout Successfully");
+    res.status(201).json({message: "User login out successfully"})
+    //return res.redirect('/');
 }
 
 exports.postSignUp = (req, res, next) => {

@@ -30,17 +30,16 @@ exports.addItemToCart = (req, res, next) => {
     });    
 }
 
-exports.addItemToWishlist = (req, res, next) => {
-    console.log(req.userData.userId);
-    const wish = new Wish({ 
-        user: req.userData.userId,
+exports.addItemToWishlist = (req, res, next) => {    
+    console.log(req.user);
+    const wish = new Wish({
+        user: req.user,
         wishItems: {
           product: req.body.product,
           quantity: req.body.quantity,
           price: req.body.price  
         }
     });
-
     wish.save((error, wish) => {
         if(error) return res.status(400).json({ message: "something wrong", error });
         if(wish) {            
@@ -114,17 +113,15 @@ exports.getProductByCatId = (req, res, next) => {
 
 
 exports.getProductCart = (req, res, next) => {
-    console.log(req.user)    
-    Cart.find()
+    //console.log(req.user)    
+    Cart.find({ user: req.user })
     .populate('cartItems.product')        
     .then(products => { 
         console.log(products);       
         res.status(200).json({
             message: "Product Fetch from Cart Successfully",
-            products: products,
-            //catName: products.category
-        });
-        //console.log(catName);
+            products: products            
+        });        
     });        
 }
     
@@ -149,11 +146,9 @@ exports.postCartDeleteProduct = (req, res, next) => {
 }
 
 exports.getProductWish = (req, res, next) => {
-    Wish.find()    
+    Wish.find({user: req.user})    
     .populate('wishItems.product')        
-    .then(wishlists => {        
-        // console.log(req.userData.userId);
-        // console.log(req.user);
+    .then(wishlists => {                
         console.log(wishlists);       
         res.status(200).json({
             message: "Product Fetch from Wishlist Successfully",
