@@ -4,55 +4,165 @@ const Order = require('../models/order');
 const Cart = require('../models/cart');
 const Wish = require('../models/wish');
 
-exports.addItemToCart = (req, res, next) => {
-    console.log(req.user);
-    const cart = new Cart({
-        user: req.user,
-        cartItems: {
-          product: req.body.product,
-          quantity: req.body.quantity,
-          price: req.body.price  
-        }
-    }); 
-
-    cart.save((error, cart) => {
-        if(error) return res.status(400).json({ message: "something wrong", error });
+exports.addItemToCart = (req, res, next) => {    
+    Cart.findOne({ user: req.user._id})
+    .exec((error, cart) => {
+        if(error) return res.status(400).json({ error});
         if(cart) {
-            return res.status(201).json({ 
-                message: 'Item added successfully into your cart',
-                user: cart.user._id,
-                pId: cart.cartItems.product,
-                cid: cart._id,
-                qty: cart.cartItems.quantity,
-                prc: cart.cartItems.price
-             });
+            //if cart already exist then update cart by quantity
+            const product = req.body.cartItems.product;
+            // console.log(product);
+            const existProduct = cart.cartItems.find(c => c.product == product);
+            let condition, update;
+            if(existProduct){
+                let updatedQty = existProduct.quantity + req.body.cartItems.quantity;
+                condition = { "user": req.user._id, "cartItems.product": product  };
+                update = {
+                    "$set": {
+                        "cartItems.$": {
+                            ...req.body.cartItems,
+                            quantity: updatedQty,
+                            price: req.body.cartItems.price * updatedQty
+                        }
+                    }
+                };                
+            } else {
+                condition = { user: req.user._id };
+                update = {
+                    "$push": {
+                        "cartItems": req.body.cartItems
+                    }
+                };
+            }            
+            Cart.findOneAndUpdate( condition, update )
+            .exec((error, _cart) => {
+                if(error) return res.status(404).json({ error});
+                if(_cart) {
+                    const cartItems = _cart.cartItems.map(ci => {
+                        return {
+                            pid: ci.product,
+                            qty: ci.quantity,
+                            prc: ci.price
+                        }
+                    })
+                    console.log(cartItems);
+                    return res.status(201).json({ 
+                        message: "Cart Item Updated successfully",
+                        cid: _cart._id,
+                        cartItems: cartItems
+                    });
+                }
+            })
+        }else {
+            //if cart is not exist then create new cart
+            const cart = new Cart({
+                user: req.user._id,
+                cartItems: [req.body.cartItems]
+                }); 
+                
+            cart.save((error, _cart) => {
+                if(error) return res.status(400).json({ error});
+                if(_cart) {
+                    const cartItems = _cart.cartItems.map(ci => {
+                        return {
+                            pid: ci.product,
+                            qty: ci.quantity,
+                            prc: ci.price
+                        }
+                    })
+                    return res.status(201).json({ 
+                        message: "Cart Item added successfully",                        
+                        cid: _cart._id,
+                        cartItems: cartItems 
+                    });
+                }
+            })
         }
-    });    
+    });      
 }
 
-exports.addItemToWishlist = (req, res, next) => {    
-    console.log(req.user);
-    const wish = new Wish({
-        user: req.user,
-        wishItems: {
-          product: req.body.product,
-          quantity: req.body.quantity,
-          price: req.body.price  
+exports.addItemToWishlist = (req, res, next) => {
+    Wish.findOne({ user: req.user._id})
+    .exec((error, wish) => {
+        if(error) return res.status(400).json({ error});
+        if(wish) {
+            //if cart already exist then update cart by quantity
+            const product = req.body.wishItems.product;
+            // console.log(product);
+            const existProduct = wish.wishItems.find(w => w.product == product);
+            let condition, update;
+            if(existProduct){
+                let updatedQty = existProduct.quantity + req.body.wishItems.quantity;
+                condition = { "user": req.user._id, "wishItems.product": product  };
+                update = {
+                    "$set": {
+                        "wishItems.$": {
+                            ...req.body.wishItems,
+                            quantity: updatedQty,
+                            price: req.body.wishItems.price * updatedQty
+                        }
+                    }
+                };                
+            } else {
+                condition = { user: req.user._id };
+                update = {
+                    "$push": {
+                        "wishItems": req.body.wishItems
+                    }
+                };
+            }            
+            Wish.findOneAndUpdate( condition, update )
+            .exec((error, _wish) => {
+                if(error) return res.status(400).json({ error});
+                if(_wish) {                    
+                    return res.status(201).json({ 
+                        message: "Wish Item Updated successfully",
+                        wish: _wish,
+                        cid: _wish._id                        
+                    });
+                }
+            })
+        }else {
+            //if cart is not exist then create new cart
+            const wish = new Wish({
+                user: req.user._id,
+                wishItems: [req.body.wishItems]
+                }); 
+                
+            wish.save((error, _wish) => {
+                if(error) return res.status(400).json({ error});
+                if(_wish) {
+                    return res.status(201).json({ 
+                        message: "Wish Item added successfully",
+                        wish: _wish,
+                        wId: _wish._id                          
+                    });
+                }
+            })
         }
-    });
-    wish.save((error, wish) => {
-        if(error) return res.status(400).json({ message: "something wrong", error });
-        if(wish) {            
-            return res.status(201).json({ 
-                message: 'Item added successfully into your Wishlist',
-                user: wish.user._id,
-                pId: wish.wishItems.product,
-                cid: wish._id,
-                qty: wish.wishItems.quantity,
-                prc: wish.wishItems.price
-             });
-        }
-    });    
+    });          
+    // console.log(req.user);
+    // const wish = new Wish({
+    //     user: req.user,
+    //     wishItems: {
+    //       product: req.body.product,
+    //       quantity: req.body.quantity,
+    //       price: req.body.price  
+    //     }
+    // });
+    // wish.save((error, wish) => {
+    //     if(error) return res.status(400).json({ message: "something wrong", error });
+    //     if(wish) {            
+    //         return res.status(201).json({ 
+    //             message: 'Item added successfully into your Wishlist',
+    //             user: wish.user._id,
+    //             pId: wish.wishItems.product,
+    //             wid: wish._id,
+    //             qty: wish.wishItems.quantity,
+    //             prc: wish.wishItems.price
+    //          });
+    //     }
+    // });    
 }
 
 exports.getProductIndex = (req, res, next) => {
@@ -116,43 +226,47 @@ exports.getProductCart = (req, res, next) => {
     //console.log(req.user)    
     Cart.find({ user: req.user })
     .populate('cartItems.product')        
-    .then(products => { 
-        console.log(products);       
+    .then(carts => {        
         res.status(200).json({
             message: "Product Fetch from Cart Successfully",
-            products: products            
-        });        
+            carts            
+        })
     });        
 }
     
 
-exports.postCartDeleteProduct = (req, res, next) => {    
-    console.log(req.user);
-    if(req.user) {
-        const cartId = req.params.cartId;
-        console.log(cartId);
-        Cart.findByIdAndRemove(cartId)
-        .then(result => {
-            //console.log('Order Canceled');
-            res.status(200).json({message: 'Cart Item has been Deleted!'});        
-            //res.redirect('/orders');
-        })
-        .catch(err => {
-            console.log(err);
-        });
-    } else {
-        res.status(400).json({message: 'Sorry user is unauthorized!'});
-    }    
+exports.postCartDeleteProduct = (req, res, next) => {
+    const product = req.params.cartId;
+    const user = req.user._id;
+    let condition, update;    
+        condition = { "user": user, "cartItems.product": product  };
+        update = {
+            $pull: {
+                cartItems: {                    
+                    product: product
+                }
+            }
+        };                        
+    Cart.findOneAndUpdate( condition, update, { multi: true } )
+    .exec((error, _cart) => {
+        if(error) return res.status(404).json({ error});
+        if(_cart) {
+            console.log(_cart);
+            return res.status(201).json({ 
+                message: "Cart Item Updated successfully",
+                _cart                                
+            });
+        }
+    })      
 }
 
 exports.getProductWish = (req, res, next) => {
     Wish.find({user: req.user})    
     .populate('wishItems.product')        
-    .then(wishlists => {                
-        console.log(wishlists);       
+    .then(wishlists => {                        
         res.status(200).json({
             message: "Product Fetch from Wishlist Successfully",
-            wishlists: wishlists            
+            wishlists            
         });        
     });        
 }
@@ -167,7 +281,7 @@ exports.deleteWishProduct = (req, res, next) => {
     if(req.user) {
         const wishId = req.params.wishId;
         console.log(wishId);
-        Wish.findByIdAndRemove(wishId)
+        Wish.deleteOne({_id: wishId})
         .then(result => {            
             res.status(200).json({message: 'Wish Item has been Deleted!'});            
         })

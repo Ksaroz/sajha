@@ -8,11 +8,11 @@ const wishSchema = new Schema({
         ref: 'User',
         required: true
     },
-    wishItems: {
+    wishItems: [{
         product: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
         quantity: { type: Number, default: 1},
-        price: { type: Number }
-    }
+        price: { type: Number, required: true }
+    }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Wish', wishSchema);

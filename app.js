@@ -108,7 +108,7 @@ app.use(function(req, res, next) {
 });
 
 mongoose.connect(process.env.MONGO_URL || MONGODB_URI,
-{ useUnifiedTopology: true, useNewUrlParser: true })
+{ useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: false })
   .then(result => {
      console.log('connected');
   })
