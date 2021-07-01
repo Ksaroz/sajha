@@ -40,9 +40,9 @@ exports.addItemToCart = (req, res, next) => {
                 if(_cart) {
                     const cartItems = _cart.cartItems.map(ci => {
                         return {
-                            pid: ci.product,
-                            qty: ci.quantity,
-                            prc: ci.price
+                            product: ci.product,
+                            quantity: ci.quantity,
+                            price: ci.price
                         }
                     })
                     console.log(cartItems);
@@ -57,7 +57,7 @@ exports.addItemToCart = (req, res, next) => {
             //if cart is not exist then create new cart
             const cart = new Cart({
                 user: req.user._id,
-                cartItems: [req.body.cartItems]
+                cartItems: [ req.body.cartItems ]
                 }); 
                 
             cart.save((error, _cart) => {
@@ -65,9 +65,9 @@ exports.addItemToCart = (req, res, next) => {
                 if(_cart) {
                     const cartItems = _cart.cartItems.map(ci => {
                         return {
-                            pid: ci.product,
-                            qty: ci.quantity,
-                            prc: ci.price
+                            product: ci.product,
+                            quantity: ci.quantity,
+                            price: ci.price
                         }
                     })
                     return res.status(201).json({ 
