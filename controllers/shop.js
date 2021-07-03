@@ -48,8 +48,7 @@ exports.addItemToCart = (req, res, next) => {
                     console.log(cartItems);
                     return res.status(201).json({ 
                         message: "Cart Item Updated successfully",
-                        cid: _cart._id,
-                        cartItems: cartItems
+                        carts: _cart
                     });
                 }
             })
@@ -72,8 +71,7 @@ exports.addItemToCart = (req, res, next) => {
                     })
                     return res.status(201).json({ 
                         message: "Cart Item added successfully",                        
-                        cid: _cart._id,
-                        cartItems: cartItems 
+                        carts: _cart 
                     });
                 }
             })
