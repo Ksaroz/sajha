@@ -9,10 +9,13 @@ exports.addItemToCart = (req, res, next) => {
     .exec((error, cart) => {
         if(error) return res.status(400).json({ error});
         if(cart) {
+            //console.log(cart);
+            //console.log(req.body.cartItems.product);
             //if cart already exist then update cart by quantity
             const product = req.body.cartItems.product;
-            // console.log(product);
+            //console.log(product);
             const existProduct = cart.cartItems.find(c => c.product == product);
+            //console.log(existProduct)
             let condition, update;
             if(existProduct){
                 let updatedQty = existProduct.quantity + req.body.cartItems.quantity;
@@ -38,6 +41,7 @@ exports.addItemToCart = (req, res, next) => {
             .exec((error, _cart) => {
                 if(error) return res.status(404).json({ error});
                 if(_cart) {
+                    console.log(_cart);
                     const cartItems = _cart.cartItems.map(ci => {
                         return {
                             product: ci.product,
@@ -45,7 +49,7 @@ exports.addItemToCart = (req, res, next) => {
                             price: ci.price
                         }
                     })
-                    console.log(cartItems);
+                    //console.log(cartItems);
                     return res.status(201).json({ 
                         message: "Cart Item Updated successfully",
                         carts: _cart
@@ -62,6 +66,7 @@ exports.addItemToCart = (req, res, next) => {
             cart.save((error, _cart) => {
                 if(error) return res.status(400).json({ error});
                 if(_cart) {
+                    console.log(_cart);
                     const cartItems = _cart.cartItems.map(ci => {
                         return {
                             product: ci.product,
