@@ -8,10 +8,7 @@ exports.addItemToCart = (req, res, next) => {
     Cart.findOne({ user: req.user._id})
     .exec((error, cart) => {
         if(error) return res.status(400).json({ error});
-        if(cart) {
-            //console.log(cart);
-            //console.log(req.body.cartItems.product);
-            //if cart already exist then update cart by quantity
+        if(cart) {            
             const product = req.body.cartItems.product;
             //console.log(product);
             const existProduct = cart.cartItems.find(c => c.product == product);
@@ -41,14 +38,7 @@ exports.addItemToCart = (req, res, next) => {
             .exec((error, _cart) => {
                 if(error) return res.status(404).json({ error});
                 if(_cart) {
-                    console.log(_cart);
-                    const cartItems = _cart.cartItems.map(ci => {
-                        return {
-                            product: ci.product,
-                            quantity: ci.quantity,
-                            price: ci.price
-                        }
-                    })
+                    console.log(_cart);                    
                     //console.log(cartItems);
                     return res.status(201).json({ 
                         message: "Cart Item Updated successfully",
@@ -66,14 +56,7 @@ exports.addItemToCart = (req, res, next) => {
             cart.save((error, _cart) => {
                 if(error) return res.status(400).json({ error});
                 if(_cart) {
-                    console.log(_cart);
-                    const cartItems = _cart.cartItems.map(ci => {
-                        return {
-                            product: ci.product,
-                            quantity: ci.quantity,
-                            price: ci.price
-                        }
-                    })
+                    console.log(_cart);                    
                     return res.status(201).json({ 
                         message: "Cart Item added successfully",                        
                         carts: _cart 
@@ -117,14 +100,7 @@ exports.addItemToWishlist = (req, res, next) => {
             Wish.findOneAndUpdate( condition, update )            
             .exec((error, _wish) => {
                 if(error) return res.status(400).json({ error});
-                if(_wish) {
-                    // const wishItems = _wish.wishItems.map(wi => {
-                    //     return {
-                    //         product: wi.product,
-                    //         quantity: wi.quantity,
-                    //         price: wi.price
-                    //     }
-                    // })                    
+                if(_wish) {                                 
                     return res.status(201).json({ 
                         message: "Wish Item Updated successfully",
                         wishlists: _wish                                             
@@ -148,29 +124,7 @@ exports.addItemToWishlist = (req, res, next) => {
                 }
             })
         }
-    });          
-    // console.log(req.user);
-    // const wish = new Wish({
-    //     user: req.user,
-    //     wishItems: {
-    //       product: req.body.product,
-    //       quantity: req.body.quantity,
-    //       price: req.body.price  
-    //     }
-    // });
-    // wish.save((error, wish) => {
-    //     if(error) return res.status(400).json({ message: "something wrong", error });
-    //     if(wish) {            
-    //         return res.status(201).json({ 
-    //             message: 'Item added successfully into your Wishlist',
-    //             user: wish.user._id,
-    //             pId: wish.wishItems.product,
-    //             wid: wish._id,
-    //             qty: wish.wishItems.quantity,
-    //             prc: wish.wishItems.price
-    //          });
-    //     }
-    // });    
+    });             
 }
 
 exports.getProductIndex = (req, res, next) => {
@@ -259,7 +213,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .exec((error, _cart) => {
         if(error) return res.status(404).json({ error});
         if(_cart) {
-            console.log(_cart);
+            //console.log(_cart);
             return res.status(201).json({ 
                 message: "Cart Item Updated successfully",
                 _cart                                
@@ -296,7 +250,7 @@ exports.deleteWishProduct = (req, res, next) => {
     .exec((error, _wish) => {
         if(error) return res.status(404).json({ error});
         if(_wish) {
-            console.log(_wish);
+            //console.log(_wish);
             return res.status(201).json({ 
                 message: "Wish Item Updated successfully",
                 _wish                                
