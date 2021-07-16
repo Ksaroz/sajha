@@ -23,6 +23,12 @@ router.get('/api/cart', productsController.getProductCart);
 /* POST add to Cart */
 router.post('/api/cart', checkAuth, productsController.addItemToCart);
 
+/* POST Cart quantity to increase*/
+router.post('/api/cart/qty/inc', checkAuth, productsController.cartQtyIncrease);
+
+/* POST Cart quantity to decrease */
+router.post('/api/cart/qty/dec', checkAuth, productsController.cartQtyDecrease);
+
 /* POST Delete Cart Items */
 router.delete('/api/cart/delete/:cartId', checkAuth, productsController.postCartDeleteProduct);
 

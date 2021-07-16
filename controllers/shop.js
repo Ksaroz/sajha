@@ -4,6 +4,98 @@ const Order = require('../models/order');
 const Cart = require('../models/cart');
 const Wish = require('../models/wish');
 
+exports.cartQtyIncrease = (req, res, next) => {
+    Cart.findOne({ user: req.user._id})
+    .exec((error, cart) => {
+        if(error) return res.status(400).json({ error});
+        if(cart) {            
+            const product = req.body.cartItems.product;
+            console.log(product);
+            const existProduct = cart.cartItems.find(c => c.product == product);
+            console.log(existProduct)
+            let condition, update;
+            if(existProduct){
+                let updatedQty = req.body.cartItems.quantity + 1;
+                condition = { "user": req.user._id, "cartItems.product": product  };
+                update = {
+                    "$set": {
+                        "cartItems.$": {
+                            ...req.body.cartItems,
+                            quantity: updatedQty,
+                            price: req.body.cartItems.price * updatedQty
+                        }
+                    }
+                };                
+            } else {
+                condition = { user: req.user._id };
+                update = {
+                    "$push": {
+                        "cartItems": req.body.cartItems
+                    }
+                };
+            }            
+            Cart.findOneAndUpdate( condition, update )
+            .exec((error, _cart) => {
+                if(error) return res.status(404).json({ error});
+                if(_cart) {
+                    //console.log(_cart);                    
+                    //console.log(cartItems);
+                    return res.status(201).json({ 
+                        message: "Cart Item Updated successfully",
+                        carts: _cart
+                    });
+                }
+            })
+        }
+    });          
+}
+
+exports.cartQtyDecrease = (req, res, next) => {
+    Cart.findOne({ user: req.user._id})
+    .exec((error, cart) => {
+        if(error) return res.status(400).json({ error});
+        if(cart) {            
+            const product = req.body.cartItems.product;
+            console.log(product);
+            const existProduct = cart.cartItems.find(c => c.product == product);
+            console.log(existProduct)
+            let condition, update;
+            if(existProduct){
+                let updatedQty = existProduct.quantity - 1;
+                condition = { "user": req.user._id, "cartItems.product": product  };
+                update = {
+                    "$set": {
+                        "cartItems.$": {
+                            ...req.body.cartItems,
+                            quantity: updatedQty,
+                            price: req.body.cartItems.price * updatedQty
+                        }
+                    }
+                };                
+            } else {
+                condition = { user: req.user._id };
+                update = {
+                    "$push": {
+                        "cartItems": req.body.cartItems
+                    }
+                };
+            }            
+            Cart.findOneAndUpdate( condition, update )
+            .exec((error, _cart) => {
+                if(error) return res.status(404).json({ error});
+                if(_cart) {
+                    //console.log(_cart);                    
+                    //console.log(cartItems);
+                    return res.status(201).json({ 
+                        message: "Cart Item Updated successfully",
+                        carts: _cart
+                    });
+                }
+            })
+        }
+    });          
+}
+
 exports.addItemToCart = (req, res, next) => {    
     Cart.findOne({ user: req.user._id})
     .exec((error, cart) => {
@@ -119,7 +211,7 @@ exports.addItemToWishlist = (req, res, next) => {
                 if(_wish) {
                     return res.status(201).json({ 
                         message: "Wish Item added successfully",
-                        wishlist: _wish                                              
+                        wishlists: _wish                                              
                     });
                 }
             })
