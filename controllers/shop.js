@@ -21,8 +21,8 @@ exports.cartQtyIncrease = (req, res, next) => {
                     "$set": {
                         "cartItems.$": {
                             ...req.body.cartItems,
-                            quantity: updatedQty,
-                            price: req.body.cartItems.price * updatedQty
+                            quantity: updatedQty
+                            //price: req.body.cartItems.price * updatedQty
                         }
                     }
                 };                
@@ -67,8 +67,8 @@ exports.cartQtyDecrease = (req, res, next) => {
                     "$set": {
                         "cartItems.$": {
                             ...req.body.cartItems,
-                            quantity: updatedQty,
-                            price: req.body.cartItems.price * updatedQty
+                            quantity: updatedQty
+                            //price: req.body.cartItems.price * updatedQty
                         }
                     }
                 };                
@@ -113,8 +113,8 @@ exports.addItemToCart = (req, res, next) => {
                     "$set": {
                         "cartItems.$": {
                             ...req.body.cartItems,
-                            quantity: updatedQty,
-                            price: req.body.cartItems.price * updatedQty
+                            quantity: updatedQty
+                            //price: req.body.cartItems.price * updatedQty
                         }
                     }
                 };                
@@ -159,6 +159,102 @@ exports.addItemToCart = (req, res, next) => {
     });      
 }
 
+/* user Carts functions ends */
+
+/* user wishlist functions start */
+
+exports.wishQtyIncrease = (req, res, next) => {
+    Wish.findOne({ user: req.user._id})
+    .exec((error, wish) => {
+        if(error) return res.status(400).json({ error});
+        if(wish) {            
+            const product = req.body.wishItems.product;
+            console.log(product);
+            const existProduct = wish.wishItems.find(w => w.product == product);
+            console.log(existProduct)
+            let condition, update;
+            if(existProduct){
+                let updatedQty = req.body.wishItems.quantity + 1;
+                condition = { "user": req.user._id, "wishItems.product": product  };
+                update = {
+                    "$set": {
+                        "wishItems.$": {
+                            ...req.body.wishItems,
+                            quantity: updatedQty,
+                            //price: req.body.wishItems.price * updatedQty
+                        }
+                    }
+                };                
+            } else {
+                condition = { user: req.user._id };
+                update = {
+                    "$push": {
+                        "wishItems": req.body.wishItems
+                    }
+                };
+            }            
+            Wish.findOneAndUpdate( condition, update )
+            .exec((error, _wish) => {
+                if(error) return res.status(404).json({ error});
+                if(_wish) {
+                    //console.log(_wish);                    
+                    //console.log(wishItems);
+                    return res.status(201).json({ 
+                        message: "wish Item Updated successfully",
+                        wishlists: _wish
+                    });
+                }
+            })
+        }
+    });          
+}
+
+exports.wishQtyDecrease = (req, res, next) => {
+    Wish.findOne({ user: req.user._id})
+    .exec((error, wish) => {
+        if(error) return res.status(400).json({ error});
+        if(wish) {            
+            const product = req.body.wishItems.product;
+            console.log(product);
+            const existProduct = wish.wishItems.find(w => w.product == product);
+            console.log(existProduct)
+            let condition, update;
+            if(existProduct){
+                let updatedQty = existProduct.quantity - 1;
+                condition = { "user": req.user._id, "wishItems.product": product  };
+                update = {
+                    "$set": {
+                        "wishItems.$": {
+                            ...req.body.wishItems,
+                            quantity: updatedQty
+                            //price: req.body.wishItems.price * updatedQty
+                        }
+                    }
+                };                
+            } else {
+                condition = { user: req.user._id };
+                update = {
+                    "$push": {
+                        "wishItems": req.body.wishItems
+                    }
+                };
+            }            
+            Wish.findOneAndUpdate( condition, update )
+            .exec((error, _wish) => {
+                if(error) return res.status(404).json({ error});
+                if(_wish) {
+                    //console.log(_wish);                    
+                    //console.log(wishItems);
+                    return res.status(201).json({ 
+                        message: "wish Item Updated successfully",
+                        wishlists: _wish
+                    });
+                }
+            })
+        }
+    });          
+}
+
 exports.addItemToWishlist = (req, res, next) => {
     Wish.findOne({ user: req.user._id})
     .exec((error, wish) => {
@@ -177,7 +273,7 @@ exports.addItemToWishlist = (req, res, next) => {
                         "wishItems.$": {
                             ...req.body.wishItems,
                             quantity: updatedQty,
-                            price: req.body.wishItems.price * updatedQty
+                            //price: req.body.wishItems.price * updatedQty
                         }
                     }
                 };                

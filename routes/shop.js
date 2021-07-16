@@ -38,6 +38,12 @@ router.get('/api/wish', productsController.getProductWish);
 /* POST add to Cart */
 router.post('/api/wish', checkAuth, productsController.addItemToWishlist);
 
+/* POST wish quantity to increase*/
+router.post('/api/wish/qty/inc', checkAuth, productsController.wishQtyIncrease);
+
+/* POST wish quantity to decrease */
+router.post('/api/wish/qty/dec', checkAuth, productsController.wishQtyDecrease);
+
 /* POST Delete Cart Items */
 router.delete('/api/wish/delete/:wishId', checkAuth, productsController.deleteWishProduct);
 

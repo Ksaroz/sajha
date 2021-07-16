@@ -10,8 +10,8 @@ const wishSchema = new Schema({
     },
     wishItems: [{
         product: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
-        quantity: { type: Number, default: 1},
-        price: { type: Number, required: true }
+        quantity: { type: Number, default: 1}
+        //price: { type: Number, required: true }
     }]
 }, { timestamps: true });
 
