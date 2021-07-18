@@ -363,7 +363,7 @@ exports.getProductById = (req, res, next) => {
 exports.getProductByCatId = (req, res, next) => {
     const catId = req.params.id;
     console.log(catId);
-    const productList = Product.find({category: catId}, function(err, cat) {
+    Product.find({category: catId}, function(err, cat) {
         if(err) { return res.status(400).json({ err }) }
         if(cat) {
             return res.status(200).json({cat})
