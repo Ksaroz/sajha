@@ -77,11 +77,8 @@ exports.postAddUser = (req, res, next) => {
     }).catch(err => console.log(err));
 }
 
-exports.postAddProduct = (req, res, next) => {        
-
-    const creator = req.userData.userId;
-    console.log(creator);
-    const { name, price, quantity, description, category, offers, attributes, variations, spec } = req.body;
+exports.postAddProduct = (req, res, next) => {            
+    const { name, price, quantity, description, category, offers, attributes, variations, spec, creator } = req.body;
     let productPictures = []; 
     if(req.files.length > 0) {
         productPictures = req.files.map(file => {
@@ -244,7 +241,7 @@ exports.deleteUser = (req, res, next) => {
 
 exports.deleteProduct = (req, res, next) => {
     const productId = req.params.id;
-    Product.deleteOne({ _id: productId, creator: req.userData.userId })
+    Product.deleteOne({ _id: productId, creator: req.user })
     .then((result) => { 
         console.log(result);
         if(result.n > 0) {
