@@ -188,7 +188,7 @@ exports.getAllProducts = (req, res, next) => {
     .then(products => { 
         //console.log(products);       
         res.status(200).json({
-            message: "Product Fetch Successfully",
+            //message: "Product Fetch Successfully",
             products: products,
             catName: products.category
         });
