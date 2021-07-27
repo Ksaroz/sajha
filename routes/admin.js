@@ -49,7 +49,7 @@ router.post('/add/attribute', checkAuth, adminController.postAddAttribute);
 router.get('/users', adminController.getAllUsers);
 
 /* GET AllProducts for admin */
-router.get('/products', adminController.getAllProducts);
+router.get('/product', adminController.getAllProducts);
 
 /* GET AllCategories for admin */
 router.get('/add/category', adminController.getAllCategories);

@@ -346,7 +346,7 @@ exports.getProduct = (req, res, next) => {
 }
 
 exports.getProductById = (req, res, next) => {
-    const prodId = req.params.id;
+    const prodId = req.params.id;    
     Product.findById(prodId)
     .populate('category')
     .populate('attributes')

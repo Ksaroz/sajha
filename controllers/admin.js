@@ -184,16 +184,16 @@ exports.getAllProducts = (req, res, next) => {
     Product.find()
     .populate('category')
     .populate('attributes')
-    .populate('creator')    
-    .then(products => { 
-        //console.log(products);       
-        res.status(200).json({
-            message: "Product Fetch Successfully",
-            products: products,
-            catName: products.category
-        });
-        //console.log(catName);
-    });    
+    .populate('creator')
+    .exec((error, products) => {
+        if(error) return res.status(400).json({ error });
+        if(products) {
+            res.status(200).json({
+                //message: 'products fetch Successfully',
+                products
+            });
+        }
+    }); 
 }
 
 exports.getAllCategories = (req, res, next) => {
@@ -202,9 +202,7 @@ exports.getAllCategories = (req, res, next) => {
     .exec((error, categories) => {
         if(error) return res.status(400).json({ error });
         if(categories) {
-
             const categoryList = createCategory(categories);
-
             res.status(200).json({
                 message: 'Categories fetch Successfully',
                 categories: categoryList
