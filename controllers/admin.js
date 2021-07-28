@@ -240,9 +240,9 @@ exports.deleteUser = (req, res, next) => {
 exports.deleteProduct = (req, res, next) => {
     const productId = req.params.id;
     Product.deleteOne({ _id: productId, creator: req.user })
-    .then((result) => { 
-        console.log(result);
-        if(result.n > 0) {
+    .then((product) => { 
+        console.log(product);
+        if(product.n > 0) {
             res.status(200).json({message: 'Product Deleted!'});
         } else {
             res.status(401).json({message: 'Unauthorized'});
