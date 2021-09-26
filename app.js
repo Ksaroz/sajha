@@ -97,8 +97,8 @@ app.use((req, res, next) => {
 //   next();
 // });
 
-app.use('/admin', adminRouter);
-app.use('/', productsRouter);
+app.use('/api/admin', adminRouter);
+app.use('/api/', productsRouter);
 app.use('/api/user', userRouter);
 // app.use('/api/category', categoryRouter);
 

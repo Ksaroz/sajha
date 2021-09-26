@@ -119,7 +119,7 @@ exports.postAddCategory = (req, res, next) => {
         name: req.body.name,
         slug: req.body.slug,
         parentId: req.body.parentId,
-        creator: req.userData.userId
+        creator: req.user
     }
 
     if(req.body.parentId) {
@@ -147,7 +147,7 @@ exports.postAddAttribute = (req, res, next) => {
         name: req.body.name,
         slug: req.body.slug,
         parentId: req.body.parentId,
-        creator: req.userData.userId
+        creator: req.user
     }
 
     if(req.body.parentId) {
@@ -252,7 +252,7 @@ exports.deleteProduct = (req, res, next) => {
 
 exports.deleteCategory = (req, res, next) => {
     const categoryId = req.params.id;
-    Category.deleteOne({ _id: categoryId, creator: req.userData.userId })
+    Category.deleteOne({ _id: categoryId, creator: req.user })
     .then((result) => {
         console.log(result);
         if(result.n > 0) {            
@@ -265,7 +265,7 @@ exports.deleteCategory = (req, res, next) => {
 
 exports.deleteAttribute = (req, res, next) => {
     const attributeId = req.params.id;
-    Attribute.deleteOne({ _id: attributeId, creator: req.userData.userId })
+    Attribute.deleteOne({ _id: attributeId, creator: req.user })
     .then((result) => {
         console.log(result);
         if(result.n > 0) {                        
@@ -326,9 +326,9 @@ exports.getEditAttributes = (req, res, next) => {
 
 /* backend post edit products function */
 exports.putEditProducts = (req, res, next) => {
-    const creator = req.userData.userId;
+    const creator = req.user;
     console.log(creator);
-    console.log(req.file);
+    console.log(req.files);
     const { name, price, quantity, description, category, offers, attributes, variations, spec } = req.body;
     console.log(req.files.length);
     let productPictures = []; 

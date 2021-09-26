@@ -6,6 +6,10 @@ const shortid = require('shortid');
 const checkAuth = require('../middleware/auth');
 const adminController = require('../controllers/admin');
 
+const productController = require('../controllers/product');
+const categoryController = require('../controllers/category');
+const attributeController = require('../controllers/attribute');
+
 const MIME_TYPE_MAP = {
   'image/png': 'png',
   'image/jpeg': 'jpg',
@@ -30,71 +34,83 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-/* GET addProducts page */
-//router.get('/add', adminController.getAddProduct);
-
-/* POST addUser */
-router.post('/add/user', checkAuth, adminController.postAddUser);
-
-/* POST addProducts */
-router.post('/add/product', checkAuth, upload.array('image'), adminController.postAddProduct); 
-
-/* POST addCategory */
-router.post('/add/category', checkAuth, adminController.postAddCategory);
-
-/* POST addAttribute */
-router.post('/add/attribute', checkAuth, adminController.postAddAttribute);
-
-/* GET Allusers for admin */
-router.get('/users', adminController.getAllUsers);
+///////////////////////*Routes for products*//////////////////////////
 
 /* GET AllProducts for admin */
-router.get('/product', adminController.getAllProducts);
+router.get('/product', productController.getAllProducts);
 
-/* GET AllCategories for admin */
-router.get('/add/category', adminController.getAllCategories);
+/* GET single Product for admin */
+router.get('/product/:id', productController.getProduct);
 
-/* GET AllAttributes for admin */
-router.get('/add/attribute', adminController.getAllAttributes);
-
-/* GET Edit Products for admin */
-router.get('/api/product/:id', adminController.getProduct);
-
-/* GET Edit Products for admin */
-router.get('/product/update/:id', adminController.getProduct);
+/* POST new product */
+router.post('/product/new', checkAuth, upload.array('image'), productController.postAddProduct); 
 
 /* PUT Edit Products for admin */
 router.put('/product/update/:id', checkAuth, upload.array('image'), adminController.putEditProducts);
 
-/* GET Edit Categories for admin */
-router.get('/add/category/update/:id', adminController.getEditCategories);
+/* POST Delete Products by admin */
+router.delete('/product/delete/:id', checkAuth, productController.deleteProduct);
 
-/* PUT Edit Categories for admin */
-router.put('/add/category/update/:id', checkAuth, adminController.putEditCategories);
+////////////////////////*end of product routes*///////////////////////
+
+
+//////////////////////*Routes for categories*//////////////////////////////
+
+/* GET AllCategories for admin */
+router.get('/category', categoryController.getAllCategories);
+
+/* GET category for update */
+router.get('/category/:id', categoryController.getCategory);
+
+/* POST addCategory */
+router.post('/category', checkAuth, categoryController.postAddCategory);
+
+/* PUT category for update */
+router.put('/category/update/:id', checkAuth, adminController.putEditCategories);
+
+/* POST Delete Category by admin */
+router.delete('/category/delete/:id', checkAuth, categoryController.deleteCategory);
+
+/////////////////////////////*end of categories routes*///////////////////////
+
+
+//////////////////////*Routes for attributes*//////////////////////////////
+
+/* GET AllAttributes for admin */
+router.get('/attribute', attributeController.getAllAttributes);
 
 /* GET Edit Attributes for admin */
-router.get('/add/attribute/update/:id', adminController.getEditAttributes);
+router.get('/attribute/:id', attributeController.getEditAttributes);
+
+/* POST addAttribute */
+router.post('/attribute', checkAuth, attributeController.postAddAttribute);
 
 /* PUT Edit Attributes for admin */
-router.put('/add/attribute/update/:id', checkAuth, adminController.putEditAttributes);
+router.put('/attribute/update/:id', checkAuth, adminController.putEditAttributes);
 
-/* POST Edit Products by admin */
-//router.post('/edit', adminController.postEditProducts);
+/* POST Delete Attributes by admin */
+router.delete('/attribute/delete/:id', checkAuth, attributeController.deleteAttribute);
+
+/////////////////////////////*end of attributes routes*///////////////////////
+
+
+//////////////////////*Routes for Users*//////////////////////////
+
+/* GET Allusers for admin */
+router.get('/users', adminController.getAllUsers);
+
+/* POST addUser */
+router.post('/user/new', checkAuth, adminController.postAddUser);
 
 /* POST Delete Products by admin */
 router.delete('/user/delete/:id', checkAuth, adminController.deleteUser);
 
-/* POST Delete Products by admin */
-router.delete('/product/delete/:id', checkAuth, adminController.deleteProduct);
+//////////////*end of user routes*///////////////////////////
 
-/* POST Delete Categories by admin */
-router.delete('/add/category/delete/:id', checkAuth, adminController.deleteCategory);
-
-/* POST Delete Attributes by admin */
-router.delete('/add/attribute/delete/:id', checkAuth, adminController.deleteAttribute);
+/* POST Edit Products by admin */
+//router.post('/edit', adminController.postEditProducts);
 
 /* GET Order page */
 //router.get('/orders', adminController.getOrders);
-
 
 module.exports = router;

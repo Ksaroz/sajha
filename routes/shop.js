@@ -4,54 +4,76 @@ var router = express.Router();
 const checkAuth = require('../middleware/auth');
 
 const productsController = require('../controllers/shop');
+const homeController = require('../controllers/home');
+const productController = require('../controllers/product');
+const cartController = require('../controllers/cart');
+const wishController = require('../controllers/wish');
+
+////////////////*Routers for guest*////////////////////
 
 /* GET home page. */
-router.get('/', productsController.getProductIndex );
+router.get('/', homeController.getProductIndex );
+
+
+///////////////*Products*//////////////////////////////
+
 
 /* GET allproducts page. */
-//router.get('/products', productsController.getAllProducts);
+router.get('/products', productController.getAllProducts);
 
 /* GET product-details page */
-router.get('/api/products/details/:id', productsController.getProductById);
+router.get('/products/details/:id', productController.getProduct);
 
 /* GET product-by-category page */
-router.get('/api/products/category/:id', productsController.getProductByCatId);
+router.get('/products/category/:id', productController.getProductByCatId);
+
+////////////////*end of product routes*/////////////////////////
+
+//////////////*Carts*//////////////////////////
 
 /* GET Cart page */
-router.get('/api/cart', productsController.getProductCart);
+router.get('/cart', cartController.getProductCart);
 
 /* POST add to Cart */
-router.post('/api/cart', checkAuth, productsController.addItemToCart);
+router.post('/cart', checkAuth, cartController.addItemToCart);
 
 /* POST Cart quantity to increase*/
-router.post('/api/cart/qty/inc', checkAuth, productsController.cartQtyIncrease);
+router.post('/cart/qty/inc', checkAuth, productsController.cartQtyIncrease);
 
 /* POST Cart quantity to decrease */
-router.post('/api/cart/qty/dec', checkAuth, productsController.cartQtyDecrease);
+router.post('/cart/qty/dec', checkAuth, productsController.cartQtyDecrease);
 
 /* POST Delete Cart Items */
-router.delete('/api/cart/delete/:cartId', checkAuth, productsController.postCartDeleteProduct);
+router.delete('/cart/delete/:cartId', checkAuth, productsController.postCartDeleteProduct);
+
+////////////////////////*end of cart routes*///////////////////////////////
+
+////////////////////*Wishes*//////////////////////////////////
 
 /* GET Cart page */
-router.get('/api/wish', productsController.getProductWish);
+router.get('/wish', wishController.getProductWish);
 
 /* POST add to Cart */
-router.post('/api/wish', checkAuth, productsController.addItemToWishlist);
+router.post('/wish', checkAuth, wishController.addItemToWishlist);
 
 /* POST wish quantity to increase*/
-router.post('/api/wish/qty/inc', checkAuth, productsController.wishQtyIncrease);
+router.post('/wish/qty/inc', checkAuth, productsController.wishQtyIncrease);
 
 /* POST wish quantity to decrease */
-router.post('/api/wish/qty/dec', checkAuth, productsController.wishQtyDecrease);
+router.post('/wish/qty/dec', checkAuth, productsController.wishQtyDecrease);
 
 /* POST Delete Cart Items */
-router.delete('/api/wish/delete/:wishId', checkAuth, productsController.deleteWishProduct);
+router.delete('/wish/delete/:wishId', checkAuth, productsController.deleteWishProduct);
+
+//////////////////////////*end of wish routes*////////////////////////////
+
+////////////////////*Orders*///////////////////////////
 
 /* POST Place Orders */
-router.post('/api/orders', checkAuth, productsController.postOrder);
+router.post('/orders', checkAuth, productsController.postOrder);
 
 /* GET Order page */
-router.get('/api/orders', productsController.getMyOrders);
+router.get('/orders', productsController.getMyOrders);
 
 /* GET order-details page */
 //router.get('/orders/details/:orderId', productsController.getOrderDetails);
@@ -62,12 +84,14 @@ router.get('/api/orders', productsController.getMyOrders);
 /* POST Delete Orders */
 //router.post('/orders/delete', productsController.postDeleteOrder);
 
+///////////////////////*end of order routes*///////////////////////
+
 /* GET About page */
 //router.get('/about', productsController.getAboutPage);
 
-function isValidUser(req, res, next) {
-    if(req.isAuthenticated()) next();     
-    else return res.status(401).json({ message: 'Unauthorized Request'});
-}
+// function isValidUser(req, res, next) {
+//     if(req.isAuthenticated()) next();     
+//     else return res.status(401).json({ message: 'Unauthorized Request'});
+// }
 
 module.exports = router;
