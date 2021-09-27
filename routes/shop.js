@@ -37,14 +37,14 @@ router.get('/cart', cartController.getProductCart);
 /* POST add to Cart */
 router.post('/cart', checkAuth, cartController.addItemToCart);
 
+/* POST Delete Cart Items */
+router.delete('/cart/delete/:pId', checkAuth, productsController.postCartDeleteProduct);
+
 /* POST Cart quantity to increase*/
 router.post('/cart/qty/inc', checkAuth, productsController.cartQtyIncrease);
 
 /* POST Cart quantity to decrease */
 router.post('/cart/qty/dec', checkAuth, productsController.cartQtyDecrease);
-
-/* POST Delete Cart Items */
-router.delete('/cart/delete/:cartId', checkAuth, productsController.postCartDeleteProduct);
 
 ////////////////////////*end of cart routes*///////////////////////////////
 
@@ -56,14 +56,14 @@ router.get('/wish', wishController.getProductWish);
 /* POST add to Cart */
 router.post('/wish', checkAuth, wishController.addItemToWishlist);
 
+/* POST Delete Cart Items */
+router.delete('/wish/delete/:pId', checkAuth, wishController.deleteWishProduct);
+
 /* POST wish quantity to increase*/
 router.post('/wish/qty/inc', checkAuth, productsController.wishQtyIncrease);
 
 /* POST wish quantity to decrease */
 router.post('/wish/qty/dec', checkAuth, productsController.wishQtyDecrease);
-
-/* POST Delete Cart Items */
-router.delete('/wish/delete/:wishId', checkAuth, productsController.deleteWishProduct);
 
 //////////////////////////*end of wish routes*////////////////////////////
 

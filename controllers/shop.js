@@ -386,8 +386,8 @@ exports.getProductCart = (req, res, next) => {
     
 
 exports.postCartDeleteProduct = (req, res, next) => {
-    const product = req.params.cartId;
-    const user = req.user._id;
+    const product = req.params.pId;    
+    const user = req.user;    
     let condition, update;    
         condition = { "user": user, "cartItems.product": product  };
         update = {
@@ -422,9 +422,9 @@ exports.getProductWish = (req, res, next) => {
 }
 
 exports.deleteWishProduct = (req, res, next) => {
-    console.log(req.params.wishId);
-    const product = req.params.wishId;
-    const user = req.user._id;
+    //console.log(req.params.pId);
+    const product = req.params.pId;
+    const user = req.user;
     let condition, update;    
         condition = { "user": user, "wishItems.product": product  };
         update = {

@@ -75,3 +75,29 @@ exports.addItemToWishlist = (req, res, next) => {
         }
     });             
 }
+
+exports.deleteWishProduct = (req, res, next) => {
+    //console.log(req.params.pId);
+    const product = req.params.pId;
+    const user = req.user;
+    let condition, update;    
+        condition = { "user": user, "wishItems.product": product  };
+        update = {
+            $pull: {
+                wishItems: {                    
+                    product: product
+                }
+            }
+        };                        
+    Wish.findOneAndUpdate( condition, update, { multi: true } )
+    .exec((error, _wish) => {
+        if(error) return res.status(404).json({ error});
+        if(_wish) {
+            //console.log(_wish);
+            return res.status(201).json({ 
+                message: "Wish Item Updated successfully",
+                _wish                                
+            });
+        }
+    })
+}

@@ -78,3 +78,28 @@ exports.addItemToCart = (req, res, next) => {
         }
     });      
 }
+
+exports.postCartDeleteProduct = (req, res, next) => {
+    const product = req.params.pId;    
+    const user = req.user;    
+    let condition, update;    
+        condition = { "user": user, "cartItems.product": product  };
+        update = {
+            $pull: {
+                cartItems: {                    
+                    product: product
+                }
+            }
+        };                        
+    Cart.findOneAndUpdate( condition, update, { multi: true } )
+    .exec((error, _cart) => {
+        if(error) return res.status(404).json({ error});
+        if(_cart) {
+            console.log(_cart);
+            return res.status(201).json({ 
+                message: "Cart Item Updated successfully",
+                _cart                                
+            });
+        }
+    })      
+}
